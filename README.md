@@ -17,8 +17,8 @@ Un projet symfony qui permet de gérer un secret santa.
 ## TODO
 
 -   [x] Faire le diagramme de classe
--   [ ] Initialiser le projet symony
--   [ ] Paramétrer la connection à la base de données
+-   [x] Initialiser le projet symony
+-   [x] Paramétrer la connection à la base de données
 -   [ ] Créer les entités
 -   [ ] Faire les tests unitaires
 -   [ ] Faire la fonction de tirage au sort
