@@ -186,33 +186,21 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
             $this->utilisateursInterdits[] = $utilisateursInterdit;
         }
 
+        if (!$utilisateursInterdit->utilisateursInterdits->contains($this)) {
+            $utilisateursInterdit->utilisateursInterdits[] = $this;
+        }
         return $this;
     }
 
     public function removeUtilisateursInterdit(self $utilisateursInterdit): self
     {
         $this->utilisateursInterdits->removeElement($utilisateursInterdit);
+        $utilisateursInterdit->utilisateursInterdits->removeElement($this);
 
         return $this;
     }
 
-    /**
-     * @return Collection<int, self>
-     */
-    public function getUtilisateursNonTirants(): Collection
-    {
-        return $this->utilisateursNonTirants;
-    }
 
-    public function addUtilisateursNonTirant(self $utilisateursNonTirant): self
-    {
-        if (!$this->utilisateursNonTirants->contains($utilisateursNonTirant)) {
-            $this->utilisateursNonTirants[] = $utilisateursNonTirant;
-            $utilisateursNonTirant->addUtilisateursInterdit($this);
-        }
-
-        return $this;
-    }
 
     public function removeUtilisateursNonTirant(self $utilisateursNonTirant): self
     {
