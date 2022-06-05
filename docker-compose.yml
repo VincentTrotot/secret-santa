@@ -1,12 +1,12 @@
 version: "3.7"
 services:
     php8:
-        container_name: data
+        container_name: secret-santa
         build: docker/php8
         ports:
             - "9000:8000"
         volumes:
-            - ./project:/var/www/html/data
+            - ./project:/var/www/html/secret-santa
         depends_on:
             - mysql
             - phpmyadmin
