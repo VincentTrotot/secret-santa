@@ -19,7 +19,7 @@ Un projet symfony qui permet de gérer un secret santa.
 -   [x] Faire le diagramme de classe
 -   [x] Initialiser le projet symony
 -   [x] Paramétrer la connection à la base de données
--   [ ] Créer les entités
+-   [x] Créer les entités
 -   [ ] Faire les tests unitaires
 -   [ ] Faire la fonction de tirage au sort
 -   [ ] Faire les vues
@@ -33,7 +33,7 @@ Un projet symfony qui permet de gérer un secret santa.
 | password : varchar(255)      |
 | nom : varchar(255)           |
 | date_de_naissance : datetime |
-| utilisateur_tiré \_id: id    |
+| utilisateur_tiré_id: id      |
 
 | utilisateur_interdit         |
 | ---------------------------- |
@@ -47,7 +47,6 @@ Un projet symfony qui permet de gérer un secret santa.
 | nom : varchar(255)   |
 | acheté : boolean     |
 | utilisateur_id : int |
-
 
 # Divers
 
