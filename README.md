@@ -48,6 +48,3 @@ Un projet symfony qui permet de gérer un secret santa.
 | acheté : boolean     |
 | utilisateur_id : int |
 
-# Divers
-
-Les ports exposés sont le port 9000 pour le serveur et le port 9080 pour phpmyadmin
