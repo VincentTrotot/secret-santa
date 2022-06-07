@@ -1,6 +1,4 @@
-docker/mysql/data*
-
-project/migrations/*.php
+/migrations/*.php
 
 # OS generated files #
 ######################
