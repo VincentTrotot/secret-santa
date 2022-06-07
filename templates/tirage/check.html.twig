@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Le tirage{% endblock %}
+
+{% block body %}
+<div class="mt-5 mb-5">
+    <table class="table table-sm">
+        <thead><th>#</th><th>Personnes tirées</th></thead>
+        <tbody>
+            {% for utilisateur in utilisateurs %}
+                <tr><td>{{ loop.index }}</td><td>{{ utilisateur.utilisateurTire }}</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="mt-5 mb-5">
+<a href="{{ path('tirage_make') }}" class="btn btn-success">Refaire le tirage</a>
+</div>
+{% endblock %}

@@ -13,8 +13,8 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 #[Route('/tirage')]
 class TirageController extends AbstractController
 {
-    #[Route('/', name: 'tirage_index')]
-    public function index(UtilisateurRepository $utilisateurRepository): Response
+    #[Route('/check', name: 'tirage_check')]
+    public function check(UtilisateurRepository $utilisateurRepository): Response
     {
         $utilisateurs = $utilisateurRepository->findAll();
         usort($utilisateurs, function ($a, $b) {
@@ -22,7 +22,7 @@ class TirageController extends AbstractController
             $dateB = $b->getUtilisateurTire()->getDateDeNaissance();
             return $dateA < $dateB ? -1 : 1;
         });
-        return $this->render('tirage/index.html.twig', [
+        return $this->render('tirage/check.html.twig', [
             'utilisateurs' => $utilisateurs,
         ]);
     }
@@ -59,6 +59,7 @@ class TirageController extends AbstractController
             $utilisateurRepository->add($utilisateur);
         }
         $doctrine->getManager()->flush();
-        return $this->redirectToRoute('tirage_index');
+
+        return $this->redirectToRoute('tirage_check');
     }
 }
