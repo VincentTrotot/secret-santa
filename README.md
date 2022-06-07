@@ -21,7 +21,9 @@ Un projet symfony qui permet de gérer un secret santa.
 -   [x] Paramétrer la connection à la base de données
 -   [x] Créer les entités
 -   [ ] Faire les tests unitaires
--   [ ] Faire la fonction de tirage au sort
+-   [x] Faire la fonction de tirage au sort
+-   [ ] Faire la gestion de la connection à l'application
+-   [ ] Faire la gestion de la liste de souhait
 -   [ ] Faire les vues
 
 ## "Diagrame de classe" (schéma de la base de donnée)

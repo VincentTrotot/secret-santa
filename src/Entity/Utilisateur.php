@@ -240,4 +240,51 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 
         return $this;
     }
+
+    public function isTiragePossible(ArrayCollection $utilisateurs): bool
+    {
+        $id_possible = [];
+        foreach ($utilisateurs as $utilisateur) {
+            $id_possible[] = $utilisateur->getId();
+        }
+
+        if (in_array($this->getId(), $id_possible)) {
+            array_splice($id_possible, array_search($this->getId(), $id_possible), 1);
+        }
+
+        foreach ($this->getUtilisateursInterdits() as $interdit) {
+            if (in_array($interdit->getId(), $id_possible)) {
+                array_splice($id_possible, array_search($interdit->getId(), $id_possible), 1);
+            }
+        }
+
+        return !empty($id_possible);
+    }
+
+    public function tire(ArrayCollection $utilisateurs): Utilisateur
+    {
+        $id_possible = [];
+        $utilisateurs_id = [];
+        foreach ($utilisateurs as $utilisateur) {
+            $utilisateurs_id[$utilisateur->getId()] = $utilisateur;
+            $id_possible[] = $utilisateur->getId();
+        }
+
+        if (in_array($this->getId(), $id_possible)) {
+            array_splice($id_possible, array_search($this->getId(), $id_possible), 1);
+        }
+
+        foreach ($this->getUtilisateursInterdits() as $interdit) {
+            if (in_array($interdit->getId(), $id_possible)) {
+                array_splice($id_possible, array_search($interdit->getId(), $id_possible), 1);
+            }
+        }
+        $u = array_rand($id_possible);
+        return $utilisateurs_id[$id_possible[$u]];
+    }
+
+    public function __toString()
+    {
+        return $this->getPrenom();
+    }
 }
