@@ -46,7 +46,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\ManyToMany(targetEntity: self::class, mappedBy: 'utilisateursInterdits')]
     private $utilisateursNonTirants;
 
-    #[ORM\OneToMany(mappedBy: 'utilisateur', targetEntity: Souhait::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'destinataire', targetEntity: Souhait::class, orphanRemoval: true)]
     private $souhaits;
 
     public function __construct()
@@ -225,7 +225,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if (!$this->souhaits->contains($souhait)) {
             $this->souhaits[] = $souhait;
-            $souhait->setUtilisateur($this);
+            $souhait->setDestinataire($this);
         }
 
         return $this;
@@ -235,8 +235,8 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     {
         if ($this->souhaits->removeElement($souhait)) {
             // set the owning side to null (unless already changed)
-            if ($souhait->getUtilisateur() === $this) {
-                $souhait->setUtilisateur(null);
+            if ($souhait->getDestinataire() === $this) {
+                $souhait->setDestinataire(null);
             }
         }
 

@@ -21,7 +21,11 @@ class Souhait
 
     #[ORM\ManyToOne(targetEntity: Utilisateur::class, inversedBy: 'souhaits')]
     #[ORM\JoinColumn(nullable: false)]
-    private $utilisateur;
+    private $destinataire;
+
+    #[ORM\ManyToOne(targetEntity: Utilisateur::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private $emetteur;
 
     public function getId(): ?int
     {
@@ -52,14 +56,26 @@ class Souhait
         return $this;
     }
 
-    public function getUtilisateur(): ?Utilisateur
+    public function getDestinataire(): ?Utilisateur
     {
-        return $this->utilisateur;
+        return $this->destinataire;
     }
 
-    public function setUtilisateur(?Utilisateur $utilisateur): self
+    public function setDestinataire(?Utilisateur $destinataire): self
     {
-        $this->utilisateur = $utilisateur;
+        $this->destinataire = $destinataire;
+
+        return $this;
+    }
+
+    public function getEmetteur(): ?Utilisateur
+    {
+        return $this->emetteur;
+    }
+
+    public function setEmetteur(?Utilisateur $emetteur): self
+    {
+        $this->emetteur = $emetteur;
 
         return $this;
     }

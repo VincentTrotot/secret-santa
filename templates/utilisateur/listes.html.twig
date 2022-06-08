@@ -1,0 +1,18 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+
+{% for utilisateur in utilisateurs %}
+    <table class="table table-sm mt-5">
+        <thead>
+            <th>{{ utilisateur }}</th>
+        </thead>
+        <tbody>
+            {% for souhait in utilisateur.souhaits %}
+                <td class="{% if souhait.achete %} table-secondary{% endif %}">{{ souhait }}</td>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endfor %}
+
+{% endblock %}
