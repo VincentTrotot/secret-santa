@@ -68,6 +68,10 @@ class UtilisateurController extends AbstractController
             return $this->redirectToRoute('compte_listes');
         }
 
+        if ($souhait->getAcheteur() != null && $souhait->getAcheteur() != $this->getUser()) {
+            $this->addFlash('info', 'Seul l\'acheteur peut modifier ce souhait.');
+            return $this->redirectToRoute('compte_listes');
+        }
 
 
         $form = $this->createForm(SouhaitType::class, $souhait);
@@ -135,8 +139,34 @@ class UtilisateurController extends AbstractController
 
         if ($this->isCsrfTokenValid('buy' . $souhait->getId(), $request->request->get('_token'))) {
             $souhait->setAchete(true);
+            $souhait->setAcheteur($this->getUser());
             $souhaitRepository->add($souhait, true);
             $this->addFlash('success', 'Votre souhait a bien été marqué comme acheté.');
+        }
+
+        return $this->redirectToRoute('compte_listes', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/listes/rendre/{id}', name: 'compte_rendre_souhait', methods: ['POST'])]
+    public function rendre(Request $request, SouhaitRepository $souhaitRepository, int $id): Response
+    {
+        $souhait = $souhaitRepository->find($id);
+
+        if ($souhait == null) {
+            $this->addFlash('info', 'Ce souhait n\'existe pas.');
+            return $this->redirectToRoute('compte_listes');
+        }
+
+        if (!$souhait->isAchete()) {
+            $this->addFlash('info', 'Ce souhait n\'a pas été acheté.');
+            return $this->redirectToRoute('compte_listes');
+        }
+
+        if ($this->isCsrfTokenValid('unbuy' . $souhait->getId(), $request->request->get('_token'))) {
+            $souhait->setAchete(false);
+            $souhait->setAcheteur(null);
+            $souhaitRepository->add($souhait, true);
+            $this->addFlash('success', 'La marque d\'achat a bien été enlevée.');
         }
 
         return $this->redirectToRoute('compte_listes', [], Response::HTTP_SEE_OTHER);

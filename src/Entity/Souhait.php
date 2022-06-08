@@ -27,6 +27,9 @@ class Souhait
     #[ORM\JoinColumn(nullable: false)]
     private $emetteur;
 
+    #[ORM\ManyToOne(targetEntity: Utilisateur::class)]
+    private $acheteur;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -83,5 +86,17 @@ class Souhait
     public function __toString(): string
     {
         return $this->nom;
+    }
+
+    public function getAcheteur(): ?Utilisateur
+    {
+        return $this->acheteur;
+    }
+
+    public function setAcheteur(?Utilisateur $acheteur): self
+    {
+        $this->acheteur = $acheteur;
+
+        return $this;
     }
 }
