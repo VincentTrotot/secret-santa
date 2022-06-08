@@ -22,31 +22,10 @@ Un projet symfony qui permet de gérer un secret santa.
 -   [x] Créer les entités
 -   [ ] Faire les tests unitaires
 -   [x] Faire la fonction de tirage au sort
--   [ ] Faire la gestion de la connection à l'application
--   [ ] Faire la gestion de la liste de souhait
--   [ ] Faire les vues
-
-## "Diagrame de classe" (schéma de la base de donnée)
-
-| utilisateur                  |
-| ---------------------------- |
-| id : int                     |
-| pseudo : varchar(255)        |
-| password : varchar(255)      |
-| nom : varchar(255)           |
-| date_de_naissance : datetime |
-| utilisateur_tiré_id: id      |
-
-| utilisateur_interdit         |
-| ---------------------------- |
-| id : int                     |
-| utilisateur_id : int         |
-| utilisateur_interdit_id : id |
-
-| souhait              |
-| -------------------- |
-| id : int             |
-| nom : varchar(255)   |
-| acheté : boolean     |
-| utilisateur_id : int |
+-   [ ] Faire la gestion de l'inscription à l'application
+-   [x] Faire la gestion de la connection à l'application
+-   [x] Faire la gestion de la liste de souhait
+-   [x] Faire les vues
+-   [ ] Faire les vues pour mobiles
+-   [ ] Faire le système d'échange de personne tirée
 
