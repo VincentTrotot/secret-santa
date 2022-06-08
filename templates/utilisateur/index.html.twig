@@ -15,40 +15,10 @@
             </h3>
         </div>
 
-        <div class="mt-5">
-            <h3>Ma liste</h3>
-            <ul class="list-group list-group-flush list-group-item-action">
-            {% for souhait in app.user.souhaits %}
-                <a href="{{ path('compte_modifier_souhait', {'id': souhait.id }) }}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-start">
-                    {{ souhait }}
-                    {% if souhait.emetteur != app.user %}
-                        <span class="badge rounded-pill bg-secondary">suggéré par {{ souhait.emetteur }}</span>
-                    {% endif %}
-                </a>
-            {% endfor %}
-            </ul>
-        </div>
+        {{ component('liste', {'id': app.user.id}) }}
         
         {% if app.user.utilisateurTire %}
-        <div class="mt-5">
-            <h3>La liste de {{ app.user.utilisateurTire }}</h3>
-            <ul class="list-group list-group-flush list-group-item-action">
-            {% if app.user.utilisateurTire.souhaits is not empty %}
-            {% for souhait in app.user.utilisateurTire.souhaits %}
-                <li class="list-group-item list-group-item-action d-flex justify-content-between align-items-start{% if souhait.achete %} disabled{% endif %}">
-                    {{ souhait }}
-                    {% if souhait.emetteur != app.user.utilisateurTire %}
-                        <span class="badge rounded-pill bg-secondary">suggéré par {{ souhait.emetteur == app.user ? 'moi' : souhait.emetteur }}</span>
-                    {% endif %}
-                </li>
-            {% endfor %}
-            {% else %}
-                <li class="list-group-item list-group-item-action d-flex justify-content-between align-items-start">
-                    {{ app.user.utilisateurTire }} n'a pas encore de liste
-                </li>
-            {% endif %}
-            </ul>
-        </div>
+            {{ component('liste', {'id': app.user.utilisateurTire.id}) }}
         {% endif %}
             
 {% endblock %}
