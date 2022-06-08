@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Le tirage{% endblock %}
+
+{% block body %}
+{% set reveal = date() > date('2022-12-26') %}
+<div class="mt-5 mb-5">
+    <table class="table table-sm">
+        <thead>
+            <th>#</th>
+            <th>il/elle</th>
+            <th>à tiré</th>
+            <th>lui/elle</th>
+            <th>ne pouvait pas tirer</th>
+        </thead>
+        <tbody>
+            {% for utilisateur in utilisateurs %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>
+                        {% if reveal %}
+                            {{ utilisateur }}
+                        {% else %}
+                            <i>Quelqu'un</i>
+                        {% endif %}
+                    </td>
+                    <td> -> </td>
+                    <td><b>{{ utilisateur.utilisateurTire ? utilisateur.utilisateurTire }}</b></td>
+                    <td>
+                        {% if reveal %}
+                            <i>{{ {utilisateur} | merge(utilisateur.utilisateursInterdits) | join(', ', ' et ') }}</i>
+                        {% else %}
+                            <i>-</i>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
