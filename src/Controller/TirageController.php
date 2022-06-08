@@ -13,7 +13,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 #[Route('/tirage')]
 class TirageController extends AbstractController
 {
-    #[Route('/check', name: 'tirage_check')]
+    #[Route('/', name: 'tirage_check')]
     public function check(UtilisateurRepository $utilisateurRepository): Response
     {
         $utilisateurs = $utilisateurRepository->findAll();
@@ -29,6 +29,16 @@ class TirageController extends AbstractController
             return $dateA < $dateB ? -1 : 1;
         });
         return $this->render('tirage/check.html.twig', [
+            'utilisateurs' => $utilisateurs,
+        ]);
+    }
+
+    #[Route('/reveal', name: 'tirage_reveal')]
+    public function reveal(UtilisateurRepository $utilisateurRepository): Response
+    {
+        $utilisateurs = $utilisateurRepository->findAll();
+
+        return $this->render('tirage/reveal.html.twig', [
             'utilisateurs' => $utilisateurs,
         ]);
     }
