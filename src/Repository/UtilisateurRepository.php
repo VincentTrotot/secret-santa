@@ -66,4 +66,27 @@ class UtilisateurRepository extends ServiceEntityRepository implements PasswordU
             ->getQuery()
             ->getResult();
     }
+
+    public function findAllByTire(int $id): array
+    {
+        $results = $this->createQueryBuilder('u')
+            ->select('u, s')
+            ->leftJoin('u.souhaits', 's')
+            ->orderBy('u.dateDeNaissance', 'ASC')
+            ->addOrderBy('s.nom', 'ASC')
+            ->getQuery()
+            ->getResult();
+
+        usort($results, function ($a, $b) use ($id) {
+            if ($a->getId() == $id) {
+                return -1;
+            } else if ($b->getId() == $id) {
+                return 1;
+            } else {
+                return 0;
+            }
+        });
+
+        return $results;
+    }
 }

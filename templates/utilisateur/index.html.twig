@@ -1,20 +1,54 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello UtilisateurController!{% endblock %}
+{% block title %}Mon compte{% endblock %}
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+    <h1>
+        Mon compte
+        <small class="text-muted">{{ app.user }}</small>
+    </h1>
+        <div class="mt-5">
+            <h3>
+                Personne tirée
+                <small class="text-muted">{{ app.user.utilisateurTire }}</small>
+            </h3>
+        </div>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ '/var/www/html/secret-santa/src/Controller/UtilisateurController.php'|file_link(0) }}">src/Controller/UtilisateurController.php</a></code></li>
-        <li>Your template at <code><a href="{{ '/var/www/html/secret-santa/templates/utilisateur/index.html.twig'|file_link(0) }}">templates/utilisateur/index.html.twig</a></code></li>
-    </ul>
-</div>
+        <div class="mt-5">
+            <h3>Ma liste</h3>
+            <ul class="list-group list-group-flush list-group-item-action">
+            {% for souhait in app.user.souhaits %}
+                <a href="{{ path('compte_modifier_souhait', {'id': souhait.id }) }}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-start">
+                    {{ souhait }}
+                    {% if souhait.emetteur != app.user %}
+                        <span class="badge rounded-pill bg-secondary">suggéré par {{ souhait.emetteur }}</span>
+                    {% endif %}
+                </a>
+            {% endfor %}
+            </ul>
+        </div>
+        
+        {% if app.user.utilisateurTire %}
+        <div class="mt-5">
+            <h3>La liste de {{ app.user.utilisateurTire }}</h3>
+            <ul class="list-group list-group-flush list-group-item-action">
+            {% if app.user.utilisateurTire.souhaits is not empty %}
+            {% for souhait in app.user.utilisateurTire.souhaits %}
+                <li class="list-group-item list-group-item-action d-flex justify-content-between align-items-start{% if souhait.achete %} disabled{% endif %}">
+                    {{ souhait }}
+                    {% if souhait.emetteur != app.user.utilisateurTire %}
+                        <span class="badge rounded-pill bg-secondary">suggéré par {{ souhait.emetteur == app.user ? 'moi' : souhait.emetteur }}</span>
+                    {% endif %}
+                </li>
+            {% endfor %}
+            {% else %}
+                <li class="list-group-item list-group-item-action d-flex justify-content-between align-items-start">
+                    {{ app.user.utilisateurTire }} n'a pas encore de liste
+                </li>
+            {% endif %}
+            </ul>
+        </div>
+        {% endif %}
+            
 {% endblock %}

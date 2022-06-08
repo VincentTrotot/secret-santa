@@ -17,16 +17,23 @@ class UtilisateurController extends AbstractController
     #[Route('/', name: 'compte_index')]
     public function index(): Response
     {
-        return $this->render('utilisateur/index.html.twig', [
-            'controller_name' => 'UtilisateurController',
-        ]);
+
+
+        return $this->render('utilisateur/index.html.twig');
     }
 
     #[Route('/listes', name: 'compte_listes')]
     public function listes(UtilisateurRepository $utilisateurRepository): Response
     {
+        /** @var $utilisateur Utilisateur */
+        $utilisateur = $this->getUser();
+
+        $utilisateurs = $utilisateurRepository->findAllByTire(
+            $utilisateur->getUtilisateurTire()->getId()
+        );
+
         return $this->render('utilisateur/listes.html.twig', [
-            'utilisateurs' => $utilisateurRepository->findAll(),
+            'utilisateurs' => $utilisateurs,
         ]);
     }
 

@@ -8,46 +8,27 @@
     <a href="{{ path('compte_ajouter_souhait') }}" class="btn btn-success">Ajouter</a>
 </div>
 
-    <table class="table table-sm table-hover mt-5">
 {% for utilisateur in utilisateurs %}
-        <thead>
-            <tr class="{% if utilisateur == app.user.utilisateurTire %} table-danger{% endif %}">
-                <th scope="col">{{ utilisateur }}</th>
-                <th scope="col"></th>
-                <th scope="col"></th>
-            </tr>
-        </thead>
-        <tbody>
-            {% if utilisateur.souhaits is not empty %}
-            {% for souhait in utilisateur.souhaits %}
-                <tr class="{% if souhait.achete %} table-secondary{% endif %}">
-                    <td>{{ souhait }}</td>
-                    <td>
-                        {% if souhait.emetteur != utilisateur %}
-                            <i>proposé par {{ souhait.emetteur }}</i>
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if souhait.emetteur == app.user or souhait.destinataire == app.user %}
-                            <a href="{{ path('compte_modifier_souhait', {'id': souhait.id }) }}" class="badge rounded-pill bg-warning text-dark link-dark">Modifier</a>
-                            <form method="post" action="{{ path('compte_supprimer_souhait', {'id': souhait.id }) }}" onsubmit="return confirm('Voulez-vous vraiment supprimer ce souhait?');" style="display:inline-block">
-                                <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ souhait.id) }}">
-                                <button class="badge rounded-pill bg-danger ">Supprimer</button>
-                            </form>
-                        {% endif %}
-                    </td>
-                </tr>
-            {% endfor %}
-            {% else %}
-                <tr>
-                <td colspan=3><i>{{ utilisateur }} n'a pas encore de liste</i></td>
-            </tr>
-            {% endif %}
-            <tr>
-                <td colspan=3>&nbsp;</td>
-            </tr>
-        </tbody>
+    <div class="mt-5">
+        <h3 {% if utilisateur == app.user.utilisateurTire %}class="text-primary"{% endif %}>La liste de {{ utilisateur }}</h3>
+
+        <ul class="list-group list-group-flush list-group-item-action">
+        {% if utilisateur.souhaits is not empty %}
+        {% for souhait in utilisateur.souhaits %}
+            <a href="{{ path('compte_modifier_souhait', {'id': souhait.id }) }}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-start{% if souhait.emetteur != app.user and souhait.achete %} disabled{% endif %}">
+                {{ souhait }}
+                {% if souhait.emetteur != utilisateur %}
+                    <span class="badge rounded-pill bg-secondary">suggéré par {{ souhait.emetteur == app.user ? 'moi' : souhait.emetteur }}</span>
+                {% endif %}
+            </a>
+        {% endfor %}
+        {% else %}
+            <li class="list-group-item list-group-item-action d-flex justify-content-between align-items-start">
+                {{ utilisateur }} n'a pas encore de liste
+            </li>
+        {% endif %}
+        </ul>
+    </div>
 {% endfor %}
-    </table>
 
 {% endblock %}
