@@ -68,19 +68,20 @@ class UtilisateurController extends AbstractController
             return $this->redirectToRoute('compte_listes');
         }
 
-        if (
-            $souhait->getEmetteur() !== $this->getUser() &&
-            $souhait->getDestinataire() !== $this->getUser()
-        ) {
-            $this->addFlash('danger', 'Vous n\'avez pas le droit de modifier ce souhait.');
-            return $this->redirectToRoute('compte_listes');
-        }
 
 
         $form = $this->createForm(SouhaitType::class, $souhait);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            if (
+                $souhait->getEmetteur() !== $this->getUser() &&
+                $souhait->getDestinataire() !== $this->getUser()
+            ) {
+                $this->addFlash('danger', 'Vous n\'avez pas le droit de modifier ce souhait.');
+                return $this->redirectToRoute('compte_listes');
+            }
+
             $souhaitRepository->add($souhait, true);
             $this->addFlash('success', 'Votre souhait a bien été modifié.');
             return $this->redirectToRoute('compte_listes');
@@ -112,6 +113,30 @@ class UtilisateurController extends AbstractController
         if ($this->isCsrfTokenValid('delete' . $souhait->getId(), $request->request->get('_token'))) {
             $this->addFlash('success', 'Votre souhait a bien été supprimé.');
             $souhaitRepository->remove($souhait, true);
+        }
+
+        return $this->redirectToRoute('compte_listes', [], Response::HTTP_SEE_OTHER);
+    }
+
+    #[Route('/listes/acheter/{id}', name: 'compte_acheter_souhait', methods: ['POST'])]
+    public function acheter(Request $request, SouhaitRepository $souhaitRepository, int $id): Response
+    {
+        $souhait = $souhaitRepository->find($id);
+
+        if ($souhait == null) {
+            $this->addFlash('info', 'Ce souhait n\'existe pas.');
+            return $this->redirectToRoute('compte_listes');
+        }
+
+        if ($souhait->isAchete()) {
+            $this->addFlash('info', 'Ce souhait a déjà été acheté.');
+            return $this->redirectToRoute('compte_listes');
+        }
+
+        if ($this->isCsrfTokenValid('buy' . $souhait->getId(), $request->request->get('_token'))) {
+            $souhait->setAchete(true);
+            $souhaitRepository->add($souhait, true);
+            $this->addFlash('success', 'Votre souhait a bien été marqué comme acheté.');
         }
 
         return $this->redirectToRoute('compte_listes', [], Response::HTTP_SEE_OTHER);

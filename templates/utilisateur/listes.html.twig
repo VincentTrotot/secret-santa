@@ -17,9 +17,13 @@
         {% for souhait in utilisateur.souhaits %}
             <a href="{{ path('compte_modifier_souhait', {'id': souhait.id }) }}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-start{% if souhait.emetteur != app.user and souhait.achete %} disabled{% endif %}">
                 {{ souhait }}
+                {% if souhait.emetteur != app.user and souhait.achete %}
+                    <span class="badge rounded-pill bg-primary">acheté</span>
+                {% endif %}
                 {% if souhait.emetteur != utilisateur %}
                     <span class="badge rounded-pill bg-secondary">suggéré par {{ souhait.emetteur == app.user ? 'moi' : souhait.emetteur }}</span>
                 {% endif %}
+                
             </a>
         {% endfor %}
         {% else %}
