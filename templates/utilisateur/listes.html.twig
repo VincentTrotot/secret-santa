@@ -1,18 +1,43 @@
 {% extends "base.html.twig" %}
 
+{% block title %}Listes{% endblock %}
+
 {% block body %}
 
-{% for utilisateur in utilisateurs %}
+<div class="mt-5">
+    <a href="{{ path('compte_ajouter_souhait') }}" class="btn btn-success">Ajouter</a>
+</div>
+
     <table class="table table-sm mt-5">
+{% for utilisateur in utilisateurs %}
         <thead>
-            <th>{{ utilisateur }}</th>
+            <tr class="{% if utilisateur.id == app.user.utilisateurTire.id %} table-danger{% endif %}">
+                <th>{{ utilisateur }}</th>
+                <th></th>
+            </tr>
         </thead>
         <tbody>
+            {% if utilisateur.souhaits is not empty %}
             {% for souhait in utilisateur.souhaits %}
-                <td class="{% if souhait.achete %} table-secondary{% endif %}">{{ souhait }}</td>
+                <tr class="{% if souhait.achete %} table-secondary{% endif %}">
+                    <td>{{ souhait }}</td>
+                    <td>
+                        {% if souhait.emetteur.id != utilisateur.id %}
+                            <i>proposé par {{ souhait.emetteur }}</i>
+                        {% endif %}
+                    </td>
+                </tr>
             {% endfor %}
+            {% else %}
+                <tr>
+                <td colspan=2><i>{{ utilisateur }} n'a pas encore de liste</i></td>
+            </tr>
+            {% endif %}
+            <tr>
+                <td colspan=2>&nbsp;</td>
+            </tr>
         </tbody>
-    </table>
 {% endfor %}
+    </table>
 
 {% endblock %}
