@@ -8,7 +8,7 @@
         <thead><th>#</th><th>Personnes tirées</th></thead>
         <tbody>
             {% for utilisateur in utilisateurs %}
-                <tr><td>{{ loop.index }}</td><td>{{ utilisateur.utilisateurTire }}</td></tr>
+                <tr><td>{{ loop.index }}</td><td>{{ utilisateur.utilisateurTire ? utilisateur.utilisateurTire }}</td></tr>
             {% endfor %}
         </tbody>
     </table>
