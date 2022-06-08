@@ -10,13 +10,15 @@
     <ul class="list-group list-group-flush list-group-item-action">
     {% if this.utilisateur.souhaits is not empty %}
     {% for souhait in this.utilisateur.souhaits %}
-        <a href="{{ path('compte_modifier_souhait', {'id': souhait.id }) }}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-start{% if souhait.emetteur != app.user and souhait.achete %} disabled{% endif %}">
+        <a href="{{ path('compte_modifier_souhait', {'id': souhait.id }) }}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-start">
             {{ souhait }}
             {% if souhait.destinataire != app.user and souhait.achete %}
                 <span class="badge rounded-pill bg-primary">acheté</span>
             {% endif %}
             {% if souhait.emetteur != this.utilisateur %}
-                <span class="badge rounded-pill bg-secondary">suggéré par {{ souhait.emetteur == app.user ? 'moi' : souhait.emetteur }}</span>
+                <span class="badge rounded-pill bg-info">suggéré par {{ souhait.emetteur == app.user ? 'moi' : souhait.emetteur }}</span>
+            {% else %}
+                <span class="badge rounded-pill bg-success">suggéré par {{ souhait.emetteur == app.user ? 'moi' : souhait.emetteur }}</span>
             {% endif %}
             
         </a>

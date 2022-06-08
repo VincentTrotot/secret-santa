@@ -9,7 +9,9 @@
 </div>
 
 {% for utilisateur in utilisateurs %}
-    {{ component('liste', {'id': utilisateur.id })}}
+    {% if utilisateur.souhaits is not empty or utilisateur == app.user.utilisateurTire %}
+        {{ component('liste', {'id': utilisateur.id })}}
+    {% endif %}
 {% endfor %}
 
 {% endblock %}
