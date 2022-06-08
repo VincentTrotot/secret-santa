@@ -12,8 +12,15 @@
         <li class="nav-item">
           <a class="nav-link{% if app.request.get('_route') == 'compte_listes' %} active{% endif %}"{% if app.request.get('_route') == 'compte_listes' %} aria-current="page"{% endif %} href="{{ path('compte_listes') }}">Listes</a>
         </li>
-        
-        
+      </ul>
+        {% if app.user %}
+        <ul class="navbar-nav d-flex ms-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+              <a class="nav-link" href="{{ path('app_logout') }}">Se déconnecter</a>
+          </li>
+        </ul>
+          {% endif %}
+      
     </div>
   </div>
 </nav>
