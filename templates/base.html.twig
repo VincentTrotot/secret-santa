@@ -14,6 +14,7 @@
         {% endblock %}
     </head>
     <body>
+        {% include "partials/_header.html.twig" %}
         <div class="container">
         {% for label, messages in app.flashes %}
             {% for message in messages %}
@@ -24,5 +25,6 @@
         {% endfor %}
         {% block body %}{% endblock %}
         </div>
+        {% include "partials/_footer.html.twig" %}
     </body>
 </html>
