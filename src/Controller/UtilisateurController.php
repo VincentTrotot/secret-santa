@@ -69,8 +69,10 @@ class UtilisateurController extends AbstractController
         }
 
         if ($souhait->getAcheteur() != null && $souhait->getAcheteur() != $this->getUser()) {
-            $this->addFlash('info', 'Seul l\'acheteur peut modifier ce souhait.');
-            return $this->redirectToRoute('compte_listes');
+            if ($souhait->getDestinataire() != $this->getUser()) {
+                $this->addFlash('info', 'Seul l\'acheteur peut modifier ce souhait.');
+                return $this->redirectToRoute('compte_listes');
+            }
         }
 
 
@@ -111,9 +113,10 @@ class UtilisateurController extends AbstractController
             $souhait->getEmetteur() !== $this->getUser() &&
             $souhait->getDestinataire() !== $this->getUser()
         ) {
-            $this->addFlash('danger', 'Vous n\'avez pas le droit de modifier ce souhait.');
+            $this->addFlash('danger', 'Vous n\'avez pas le droit de supprimer ce souhait.');
             return $this->redirectToRoute('compte_listes');
         }
+
         if ($this->isCsrfTokenValid('delete' . $souhait->getId(), $request->request->get('_token'))) {
             $this->addFlash('success', 'Votre souhait a bien été supprimé.');
             $souhaitRepository->remove($souhait, true);
