@@ -62,6 +62,7 @@ class UtilisateurRepository extends ServiceEntityRepository implements PasswordU
             ->select('u, s')
             ->leftJoin('u.souhaits', 's')
             ->orderBy('u.dateDeNaissance', 'ASC')
+            ->addOrderBy('s.nom', 'ASC')
             ->getQuery()
             ->getResult();
     }

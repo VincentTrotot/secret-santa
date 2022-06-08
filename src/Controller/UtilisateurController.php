@@ -50,4 +50,63 @@ class UtilisateurController extends AbstractController
             'form' => $form,
         ]);
     }
+
+    #[Route('/listes/modifier/{id}', name: 'compte_modifier_souhait')]
+    public function modifierSouhait(Request $request, SouhaitRepository $souhaitRepository, int $id): Response
+    {
+        $souhait = $souhaitRepository->find($id);
+
+        if ($souhait == null) {
+            $this->addFlash('info', 'Ce souhait n\'existe pas.');
+            return $this->redirectToRoute('compte_listes');
+        }
+
+        if (
+            $souhait->getEmetteur() !== $this->getUser() &&
+            $souhait->getDestinataire() !== $this->getUser()
+        ) {
+            $this->addFlash('danger', 'Vous n\'avez pas le droit de modifier ce souhait.');
+            return $this->redirectToRoute('compte_listes');
+        }
+
+
+        $form = $this->createForm(SouhaitType::class, $souhait);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $souhaitRepository->add($souhait, true);
+            $this->addFlash('success', 'Votre souhait a bien été modifié.');
+            return $this->redirectToRoute('compte_listes');
+        }
+
+        return $this->renderForm('utilisateur/modifier_souhait.html.twig', [
+            'souhait' => $souhait,
+            'form' => $form,
+        ]);
+    }
+
+    #[Route('/listes/supprimer/{id}', name: 'compte_supprimer_souhait', methods: ['POST'])]
+    public function delete(Request $request, SouhaitRepository $souhaitRepository, int $id): Response
+    {
+        $souhait = $souhaitRepository->find($id);
+
+        if ($souhait == null) {
+            $this->addFlash('info', 'Ce souhait n\'existe pas.');
+            return $this->redirectToRoute('compte_listes');
+        }
+
+        if (
+            $souhait->getEmetteur() !== $this->getUser() &&
+            $souhait->getDestinataire() !== $this->getUser()
+        ) {
+            $this->addFlash('danger', 'Vous n\'avez pas le droit de modifier ce souhait.');
+            return $this->redirectToRoute('compte_listes');
+        }
+        if ($this->isCsrfTokenValid('delete' . $souhait->getId(), $request->request->get('_token'))) {
+            $this->addFlash('success', 'Votre souhait a bien été supprimé.');
+            $souhaitRepository->remove($souhait, true);
+        }
+
+        return $this->redirectToRoute('compte_listes', [], Response::HTTP_SEE_OTHER);
+    }
 }
