@@ -1,0 +1,67 @@
+<div class="mt-5">
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Statut</th>
+                        <th>Date</th>
+                        <th>Demande</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for demande in this.echanges %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>{{ demande.date | date('d/m/Y') }}</td>
+                        <td>
+                            {% if demande.status == 'en_attente' %}
+                                <span class="badge rounded-pill bg-info">en attente</span>
+                            {% elseif demande.status == 'accepte' %}
+                                <span class="badge rounded-pill bg-success">acceptée</span>
+                            {% elseif demande.status == 'refuse' %}
+                                <span class="badge rounded-pill bg-danger">refusée</span>
+                            {% else %}
+                                <span class="badge rounded-pill bg-danger">annulée</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if app.user == demande.demandeur %}
+                                Vous avez demandé un échange à <b>{{ demande.receveur }}</b>.
+                            {% else %}
+                                <b>{{ demande.demandeur }}</b> vous a demandé un échange.
+                                {% if demande.status == 'en_attente' %}<br>Il/elle a tiré <b>{{ demande.demandeur.utilisateurTire }}</b>.{% endif %}
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if demande.status == 'en_attente' and app.user != demande.demandeur %}
+                                <form method="post" action="{{ path('compte_accepter_echange', {'id': demande.id }) }}" onsubmit="return confirm('Voulez-vous vraiment accpeter cet échange?');">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('accepte' ~ demande.id) }}">
+                                    <button class="btn btn-success "><i class="bi bi-check"></i></button>
+                                </form>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if app.user == demande.demandeur %}
+                                {% if demande.status == 'en_attente' %}
+                                    <form method="post" action="{{ path('compte_refuser_echange', {'id': demande.id }) }}" onsubmit="return confirm('Voulez-vous vraiment annuler cet échange?');">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('refuse' ~ demande.id) }}">
+                                        <button class="btn btn-danger "><i class="bi bi-x"></i></button>
+                                    </form>
+                                {% endif %}
+                            {% else %}
+                                {% if demande.status == 'en_attente' %}
+                                    <form method="post" action="{{ path('compte_refuser_echange', {'id': demande.id }) }}" onsubmit="return confirm('Voulez-vous vraiment refuser cet échange?');">
+                                        <input type="hidden" name="_token" value="{{ csrf_token('refuse' ~ demande.id) }}">
+                                        <button class="btn btn-danger "><i class="bi bi-x"></i></button>
+                                    </form>
+                                {% endif %}
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+
+        </div>

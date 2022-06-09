@@ -16,7 +16,7 @@ class Echange
     #[ORM\Column(type: 'datetime')]
     private $date;
 
-    #[ORM\ManyToOne(targetEntity: Utilisateur::class, inversedBy: 'propositions')]
+    #[ORM\ManyToOne(targetEntity: Utilisateur::class, inversedBy: 'demandesFaites')]
     #[ORM\JoinColumn(nullable: false)]
     private $demandeur;
 

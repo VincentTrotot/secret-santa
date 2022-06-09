@@ -39,28 +39,16 @@ class EchangeRepository extends ServiceEntityRepository
         }
     }
 
-//    /**
-//     * @return Echange[] Returns an array of Echange objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('e')
-//            ->andWhere('e.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('e.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
-
-//    public function findOneBySomeField($value): ?Echange
-//    {
-//        return $this->createQueryBuilder('e')
-//            ->andWhere('e.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    public function findForUser(int $id)
+    {
+        return $this->createQueryBuilder('e')
+            ->select('e, u1, u2')
+            ->join('e.demandeur', 'u1')
+            ->join('e.receveur', 'u2')
+            ->andWhere('e.demandeur = :id OR e.receveur = :id')
+            ->setParameter('id', $id)
+            ->orderBy('e.date', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 }

@@ -27,5 +27,5 @@ Un projet symfony qui permet de gérer un secret santa.
 -   [x] Faire la gestion de la liste de souhait
 -   [x] Faire les vues
 -   [ ] Faire les vues pour mobiles
--   [ ] Faire le système d'échange de personne tirée
+-   [x] Faire le système d'échange de personne tirée
 
