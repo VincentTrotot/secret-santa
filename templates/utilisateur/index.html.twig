@@ -15,10 +15,16 @@
             </h3>
         </div>
 
+        
+
         {{ component('liste', {'id': app.user.id}) }}
         
         {% if app.user.utilisateurTire %}
             {{ component('liste', {'id': app.user.utilisateurTire.id}) }}
         {% endif %}
+
+        <div class="mt-5">
+            <a href="{{ path('compte_ajouter_souhait') }}" class="btn btn-success">Ajouter un souhait</a>
+        </div>
             
 {% endblock %}

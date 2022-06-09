@@ -1,4 +1,5 @@
 <div class="mt-5">
+{% if this.utilisateur == app.user.utilisateurTire %}<hr>{% endif %}
     <h3 {% if this.utilisateur == app.user.utilisateurTire %}class="text-primary"{% endif %}>
         {% if this.utilisateur == app.user %}
             Ma liste
@@ -13,7 +14,7 @@
         <a href="{{ path('compte_modifier_souhait', {'id': souhait.id }) }}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-start">
             {{ souhait }}
             {% if souhait.destinataire != app.user and souhait.achete %}
-                <span class="badge rounded-pill bg-primary">acheté</span>
+                <span class="badge rounded-pill bg-primary">acheté{% if souhait.acheteur == app.user %} par moi{% endif %}</span>
             {% endif %}
             {% if souhait.emetteur != this.utilisateur %}
                 <span class="badge rounded-pill bg-info">suggéré par {{ souhait.emetteur == app.user ? 'moi' : souhait.emetteur }}</span>
@@ -30,3 +31,4 @@
     {% endif %}
     </ul>
 </div>
+{% if this.utilisateur == app.user.utilisateurTire %}<hr>{% endif %}
