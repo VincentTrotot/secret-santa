@@ -49,11 +49,19 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'destinataire', targetEntity: Souhait::class, orphanRemoval: true)]
     private $souhaits;
 
+    #[ORM\OneToMany(mappedBy: 'demandeur', targetEntity: Echange::class, orphanRemoval: true)]
+    private $demandesFaites;
+
+    #[ORM\OneToMany(mappedBy: 'receveur', targetEntity: Echange::class, orphanRemoval: true)]
+    private $demandesRecues;
+
     public function __construct()
     {
         $this->utilisateursInterdits = new ArrayCollection();
         $this->utilisateursNonTirants = new ArrayCollection();
         $this->souhaits = new ArrayCollection();
+        $this->demandesFaitesFaites = new ArrayCollection();
+        $this->demandesRecues = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -288,5 +296,65 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     public function __toString()
     {
         return $this->getPrenom();
+    }
+
+    /**
+     * @return Collection<int, Echange>
+     */
+    public function getDemandesFaites(): Collection
+    {
+        return $this->demandesFaites;
+    }
+
+    public function addDemandesFaite(Echange $demandesFaite): self
+    {
+        if (!$this->demandesFaites->contains($demandesFaite)) {
+            $this->demandesFaites[] = $demandesFaite;
+            $demandesFaite->setDemandeur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDemandesFaite(Echange $demandesFaite): self
+    {
+        if ($this->demandesFaites->removeElement($demandesFaite)) {
+            // set the owning side to null (unless already changed)
+            if ($demandesFaite->getDemandeur() === $this) {
+                $demandesFaite->setDemandeur(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Echange>
+     */
+    public function getDemandesRecues(): Collection
+    {
+        return $this->demandesRecues;
+    }
+
+    public function addDemandesRecue(Echange $demandesRecue): self
+    {
+        if (!$this->demandesRecues->contains($demandesRecue)) {
+            $this->demandesRecues[] = $demandesRecue;
+            $demandesRecue->setReceveur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeDemandesRecue(Echange $demandesRecue): self
+    {
+        if ($this->demandesRecues->removeElement($demandesRecue)) {
+            // set the owning side to null (unless already changed)
+            if ($demandesRecue->getReceveur() === $this) {
+                $demandesRecue->setReceveur(null);
+            }
+        }
+
+        return $this;
     }
 }

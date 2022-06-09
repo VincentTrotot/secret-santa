@@ -2,8 +2,11 @@
 
 namespace App\Controller;
 
+use App\Entity\Echange;
 use App\Entity\Souhait;
+use App\Form\EchangeType;
 use App\Form\SouhaitType;
+use App\Repository\EchangeRepository;
 use App\Repository\SouhaitRepository;
 use App\Repository\UtilisateurRepository;
 use Symfony\Component\HttpFoundation\Request;
@@ -192,6 +195,35 @@ class UtilisateurController extends AbstractController
         });
         return $this->render('utilisateur/tirage.html.twig', [
             'utilisateurs' => $utilisateurs,
+        ]);
+    }
+
+    #[Route('/echange', name: 'compte_echange')]
+    public function echange(Request $request, EchangeRepository $echangeRepository)
+    {
+        $echanges = $echangeRepository->findBy(['demandeur' => $this->getUser()]);
+        foreach ($echanges as $echange) {
+            if ($echange->getDemandeur() == $this->getUser()) {
+                $this->addFlash('danger', 'Vous avez déjà une demande en cours.');
+                return $this->redirectToRoute('compte_index');
+            }
+        }
+        $echange = new Echange();
+        $echange->setDemandeur($this->getUser());
+        $echange->setDate(new \DateTime());
+        $echange->setStatus(Echange::STATUS_EN_ATTENTE);
+        $form = $this->createForm(EchangeType::class, $echange);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $echangeRepository->add($echange, true);
+            $this->addFlash('success', 'Votre demande d\'échange a bien été enregistrée.');
+            return $this->redirectToRoute('compte_index');
+        }
+
+        return $this->renderForm('utilisateur/echange/demande.html.twig', [
+            'souhait' => $echange,
+            'form' => $form,
         ]);
     }
 }
