@@ -5,26 +5,24 @@
 {% block body %}
 
     <h1>
-        Mon compte
+        <i class="bi bi-person-fill"></i> 
         <small class="text-muted">{{ app.user }}</small>
     </h1>
+    {{ component('liste', {'id': app.user.id}) }}
+
+    {% if app.user.utilisateurTire %}
         <div class="mt-5">
-            <h3>
-                Personne tirée
+            <h1>
+                <i class="bi bi-arrow-right-square-fill"></i> 
                 <small class="text-muted">{{ app.user.utilisateurTire }}</small>
-            </h3>
+            </h1>
         </div>
 
-        
-
-        {{ component('liste', {'id': app.user.id}) }}
-        
-        {% if app.user.utilisateurTire %}
-            {{ component('liste', {'id': app.user.utilisateurTire.id}) }}
-        {% endif %}
+        {{ component('liste', {'id': app.user.utilisateurTire.id}) }}
+    {% endif %}
 
         <div class="mt-5">
-            <a href="{{ path('compte_ajouter_souhait') }}" class="btn btn-success">Ajouter un souhait</a>
+            <a href="{{ path('compte_ajouter_souhait') }}" class="btn btn-outline-success"><i class="bi bi-gift"></i> Ajouter un souhait</a>
         </div>
             
 {% endblock %}

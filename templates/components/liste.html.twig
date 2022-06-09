@@ -1,10 +1,9 @@
 <div class="mt-5">
-{% if this.utilisateur == app.user.utilisateurTire %}<hr>{% endif %}
     <h3 {% if this.utilisateur == app.user.utilisateurTire %}class="text-primary"{% endif %}>
         {% if this.utilisateur == app.user %}
             Ma liste
         {% else %}    
-            La liste de {{ this.utilisateur }}
+            {% if this.utilisateur == app.user.utilisateurTire %}<i class="bi bi-gift"></i>{% endif %} La liste de {{ this.utilisateur }}
         {% endif %}
     </h3>
 
@@ -31,4 +30,3 @@
     {% endif %}
     </ul>
 </div>
-{% if this.utilisateur == app.user.utilisateurTire %}<hr>{% endif %}

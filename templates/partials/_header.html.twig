@@ -5,18 +5,18 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        {% if app.user %}
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item">
-          <a class="nav-link{% if app.request.get('_route') == 'compte_index' %} active{% endif %}"{% if app.request.get('_route') == 'compte_index' %} aria-current="page"{% endif %} href="{{ path('compte_index') }}">Mon compte</a>
+          <a class="nav-link{% if app.request.get('_route') == 'compte_index' %} active{% endif %}"{% if app.request.get('_route') == 'compte_index' %} aria-current="page"{% endif %} href="{{ path('compte_index') }}"><i class="bi bi-person-fill"></i> Mon compte</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link{% if app.request.get('_route') == 'compte_listes' %} active{% endif %}"{% if app.request.get('_route') == 'compte_listes' %} aria-current="page"{% endif %} href="{{ path('compte_listes') }}">Listes</a>
+          <a class="nav-link{% if app.request.get('_route') == 'compte_listes' %} active{% endif %}"{% if app.request.get('_route') == 'compte_listes' %} aria-current="page"{% endif %} href="{{ path('compte_listes') }}"><i class="bi bi-box2-heart"></i> Listes</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link{% if app.request.get('_route') == 'compte_tirage' %} active{% endif %}"{% if app.request.get('_route') == 'compte_tirage' %} aria-current="page"{% endif %} href="{{ path('compte_tirage') }}">Tirage</a>
+          <a class="nav-link{% if app.request.get('_route') == 'compte_tirage' %} active{% endif %}"{% if app.request.get('_route') == 'compte_tirage' %} aria-current="page"{% endif %} href="{{ path('compte_tirage') }}"><i class="bi bi-card-checklist"></i> Tirage</a>
         </li>
       </ul>
-        {% if app.user %}
         <ul class="navbar-nav d-flex ms-auto mb-2 mb-lg-0">
           <li class="nav-item">
               <a class="nav-link" href="{{ path('app_logout') }}">Se déconnecter</a>
