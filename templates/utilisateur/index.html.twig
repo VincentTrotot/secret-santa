@@ -4,37 +4,40 @@
 
 {% block body %}
 
-    <h1>
-        <i class="bi bi-person-fill"></i> 
-        <small class="text-muted">{{ app.user }}</small>
-    </h1>
-    {{ component('liste', {'id': app.user.id}) }}
+    <div class="container px-5 py-5">
+        <h1>
+            <i class="bi bi-person-fill"></i> 
+            <small class="text-muted">{{ app.user }}</small>
+        </h1>
+        {{ component('liste', {'id': app.user.id}) }}
+    </div>
 
     {% if app.user.utilisateurTire %}
-        <div class="mt-5">
+    <div class="container bg-light px-5 py-5">
             <h1>
                 <i class="bi bi-arrow-right-square-fill"></i> 
                 <small class="text-muted">{{ app.user.utilisateurTire }}</small>
             </h1>
-        </div>
 
         {{ component('liste', {'id': app.user.utilisateurTire.id}) }}
+    </div>
     {% endif %}
 
-        <div class="mt-5">
+        <div class="mt-5 px-5">
             <a href="{{ path('compte_ajouter_souhait') }}" class="btn btn-outline-success"><i class="bi bi-gift"></i> Ajouter un souhait</a>
         </div>
 
-        <div class="mt-5">
+        <div class="container px-5 py-5">
             <h1>
                 <i class="bi bi-arrow-left-right"></i> 
                 <small class="text-muted">Échange</small>
             </h1>
 
-        <div class="mt-2">
-            <a href="{{ path('compte_echange') }}" class="btn btn-outline-danger"><i class="bi bi-arrow-left-right"></i> Demander un échange</a>
-        </div>
+            <div class="mt-4">
+                <a href="{{ path('compte_echange') }}" class="btn btn-outline-danger"><i class="bi bi-arrow-left-right"></i> Demander un échange</a>
+            </div>
 
-        {{ component('echanges', {'id': app.user.id}) }}
+            {{ component('echanges', {'id': app.user.id}) }}
+        </div>
             
 {% endblock %}
