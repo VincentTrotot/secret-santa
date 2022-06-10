@@ -21,7 +21,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class UtilisateurController extends AbstractController
 {
     #[Route('/', name: 'compte_index')]
-    public function index(EchangeRepository $echangeRepository): Response
+    public function index(): Response
     {
         return $this->render('utilisateur/index.html.twig');
     }
@@ -33,7 +33,7 @@ class UtilisateurController extends AbstractController
         $utilisateur = $this->getUser();
 
         $utilisateurs = $utilisateurRepository->findAllByTire(
-            $utilisateur->getUtilisateurTire()->getId()
+            $utilisateur->getUtilisateurTire()?->getId() ?? null
         );
 
         return $this->render('utilisateur/listes.html.twig', [

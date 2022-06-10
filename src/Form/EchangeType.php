@@ -3,10 +3,12 @@
 namespace App\Form;
 
 use App\Entity\Echange;
+use App\Entity\Utilisateur;
 use Symfony\Component\Form\AbstractType;
 use App\Repository\UtilisateurRepository;
 use Symfony\Component\Security\Core\Security;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class EchangeType extends AbstractType
@@ -24,12 +26,16 @@ class EchangeType extends AbstractType
         $user = $this->security->getUser();
 
         $builder
-            ->add('receveur', null, [
+            ->add('receveur', EntityType::class, [
+                'class' => Utilisateur::class,
                 'label' => 'Avec qui voulez-vous échanger ?',
+                'choice_label' => 'prenom',
                 'query_builder' => function (UtilisateurRepository $ur) use ($user) {
                     return $ur->createQueryBuilder('u')
                         ->orderBy('u.dateDeNaissance', 'ASC')
                         ->where('u.id != :id')
+                        ->andWhere('u.roles LIKE :role')
+                        ->setParameter('role', '%ROLE_PARTICIPANT%')
                         ->setParameter('id', $user->getId());
                 },
                 'attr' => [

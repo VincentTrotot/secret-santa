@@ -4,11 +4,18 @@
 </nav>
 {% if app.user %}
 <nav class="menu" id="menu">
+    {% if is_granted('ROLE_PARTICIPANT') %}
         <a class="{% if app.request.get('_route') == 'compte_index' %} active{% endif %}"{% if app.request.get('_route') == 'compte_index' %} aria-current="page"{% endif %} href="{{ path('compte_index') }}"><i class="bi bi-person-fill"></i> Mon compte</a>
         <a class="{% if app.request.get('_route') == 'compte_listes' %} active{% endif %}"{% if app.request.get('_route') == 'compte_listes' %} aria-current="page"{% endif %} href="{{ path('compte_listes') }}"><i class="bi bi-box2-heart"></i> Listes</a>
         <a class="{% if app.request.get('_route') == 'compte_tirage' %} active{% endif %}"{% if app.request.get('_route') == 'compte_tirage' %} aria-current="page"{% endif %} href="{{ path('compte_tirage') }}"><i class="bi bi-card-checklist"></i> Tirage</a>
         <a class="{% if app.request.get('_route') == 'compte_ajouter_souhait' %} active{% endif %}"{% if app.request.get('_route') == 'compte_ajouter_souhait' %} aria-current="page"{% endif %} href="{{ path('compte_ajouter_souhait') }}"><i class="bi bi-gift"></i> Ajouter un souhait</a>
         <a class="{% if app.request.get('_route') == 'compte_echange' %} active{% endif %}"{% if app.request.get('_route') == 'compte_echange' %} aria-current="page"{% endif %} href="{{ path('compte_echange') }}"><i class="bi bi-arrow-left-right"></i> Demander un échange</a>
+    {% endif %}
+    {% if is_granted('ROLE_ADMIN') %}
+        <a class="{% if app.request.get('_route') == 'tirage_make' %} active{% endif %}"{% if app.request.get('_route') == 'tirage_make' %} aria-current="page"{% endif %} href="{{ path('tirage_make') }}"><i class="bi bi-shuffle"></i> Faire le tirage</a>
+        <a class="{% if app.request.get('_route') == 'tirage_reveal' %} active{% endif %}"{% if app.request.get('_route') == 'tirage_reveal' %} aria-current="page"{% endif %} href="{{ path('tirage_reveal') }}"><i class="bi bi-search"></i> Reveal</a>
+    {% endif %}
+
         <a class="" href="{{ path('app_logout') }}">Se déconnecter</a>
 </nav>
 {% endif %}
