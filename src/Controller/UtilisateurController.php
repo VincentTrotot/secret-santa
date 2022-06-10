@@ -71,13 +71,13 @@ class UtilisateurController extends AbstractController
 
         if ($souhait == null) {
             $this->addFlash('info', 'Ce souhait n\'existe pas.');
-            return $this->redirectToRoute('compte_listes');
+            return $this->redirectToRoute('compte_index');
         }
 
         if ($souhait->getAcheteur() != null && $souhait->getAcheteur() != $this->getUser()) {
             if ($souhait->getDestinataire() != $this->getUser()) {
                 $this->addFlash('info', 'Seul l\'acheteur peut modifier ce souhait.');
-                return $this->redirectToRoute('compte_listes');
+                return $this->redirectToRoute('compte_index');
             }
         }
 

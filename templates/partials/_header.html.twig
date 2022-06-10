@@ -16,6 +16,7 @@
     {% if is_granted('ROLE_ADMIN') %}
         <a class="{% if app.request.get('_route') == 'tirage_make' %} active{% endif %}"{% if app.request.get('_route') == 'tirage_make' %} aria-current="page"{% endif %} href="{{ path('tirage_make') }}"><i class="bi bi-shuffle"></i> Faire le tirage</a>
         <a class="{% if app.request.get('_route') == 'tirage_reveal' %} active{% endif %}"{% if app.request.get('_route') == 'tirage_reveal' %} aria-current="page"{% endif %} href="{{ path('tirage_reveal') }}"><i class="bi bi-search"></i> Reveal</a>
+        <a class="{% if app.request.get('_route') == 'admin_utilisateurs' %} active{% endif %}"{% if app.request.get('_route') == 'admin_utilisateurs' %} aria-current="page"{% endif %} href="{{ path('admin_utilisateurs') }}"><i class="bi bi-people-fill"></i> Utilisateurs</a>
     {% endif %}
 
         <a class="" href="{{ path('app_logout') }}">Se déconnecter</a>

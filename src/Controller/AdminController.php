@@ -3,8 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\Utilisateur;
+use App\Form\UtilisateurType;
 use App\Repository\UtilisateurRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -86,6 +88,32 @@ class AdminController extends AbstractController
         $utilisateurs = $utilisateurRepository->findAll();
         return $this->render('admin/utilisateurs.html.twig', [
             'utilisateurs' => $utilisateurs,
+        ]);
+    }
+
+    #[Route('/utilisateur/modifier/{id}', name: 'admin_modifier_utilisateur')]
+    public function modifierUtilisateur(Request $request, UtilisateurRepository $utilisateurRepository, int $id): Response
+    {
+        $utilisateur = $utilisateurRepository->find($id);
+
+        if ($utilisateur == null) {
+            $this->addFlash('info', 'Cet utilisateur n\'existe pas.');
+            return $this->redirectToRoute('compte_index');
+        }
+
+        $form = $this->createForm(UtilisateurType::class, $utilisateur);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $utilisateurRepository->add($utilisateur, true);
+            $this->addFlash('success', 'L\'utilisateur a été modifié.');
+            return $this->redirectToRoute('admin_utilisateurs');
+        }
+
+        return $this->renderForm('admin/modifier_utilisateur.html.twig', [
+            'utilisateur' => $utilisateur,
+            'form' => $form,
         ]);
     }
 }

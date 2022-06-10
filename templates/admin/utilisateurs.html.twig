@@ -1,0 +1,28 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Utilisateurs{% endblock %}
+
+{% block body %}
+    <table class="table table-sm">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Utilisateur</th>
+                <th>Date de naissance</th>
+                <th>Rôles</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for utilisateur in utilisateurs %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ utilisateur.prenom }} {{ utilisateur.nom}}</td>
+                    <td>{{ utilisateur.dateDeNaissance | date('d/m/Y') }}</td>
+                    <td>{{ utilisateur.roles | join(' / ') | lower() }}</td>
+                    <td><a href="{{ path('admin_modifier_utilisateur', {'id': utilisateur.id}) }}" class="btn btn-small btn-primary">Modifier</a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}
