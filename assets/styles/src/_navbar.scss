@@ -2,7 +2,7 @@
     width: 100%;
     background-color: var(--main-color);
     color: var(--secondary-color);
-    height: 60px;
+    height: var(--header-size);
     font-weight: 900;
     font-size: 1.2em;
     align-items: center;
@@ -10,6 +10,9 @@
     gap: 1em;
     padding: 1em;
     margin: 0 0 2em 0;
+    position: fixed;
+    top: 0;
+    z-index: 500;
 }
 
 .navbar-header .menu-toggle {
@@ -25,9 +28,9 @@
 
 .menu {
     position: fixed;
-    top: 60px;
+    top: var(--header-size);
     width: 350px;
-    height: calc(100vh - 60px);
+    height: calc(100vh - var(--header-size));
     background-color: var(--main-color);
     font-size: 1em;
     transform: translateX(-100%);
@@ -45,6 +48,10 @@
     padding: 1em;
     display: block;
     border-bottom: 1px solid var(--secondary-color);
+}
+
+.menu a:first-child {
+    margin-top: calc(var(--header-size) / 2);
 }
 
 .menu a.active {

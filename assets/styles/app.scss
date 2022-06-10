@@ -6,3 +6,12 @@
 @import "src/fonts";
 @import "src/home";
 @import "src/navbar";
+
+@media screen and (max-width: 768px) {
+    .responsive-flex {
+        flex-direction: column;
+        gap: 0.5em;
+        text-align: center;
+        align-items: center !important;
+    }
+}

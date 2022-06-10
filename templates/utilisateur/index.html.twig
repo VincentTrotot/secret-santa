@@ -4,7 +4,7 @@
 
 {% block body %}
 
-    <div class="container px-5 py-5">
+    <div class="container py-5">
         <h1>
             <i class="bi bi-person-fill"></i> 
             <small class="text-muted">{{ app.user }}</small>
@@ -13,7 +13,7 @@
     </div>
 
     {% if app.user.utilisateurTire %}
-    <div class="container bg-light px-5 py-5">
+    <div class="container bg-light py-5">
             <h1>
                 <i class="bi bi-arrow-right-square-fill"></i> 
                 <small class="text-muted">{{ app.user.utilisateurTire }}</small>
@@ -27,7 +27,7 @@
             <a href="{{ path('compte_ajouter_souhait') }}" class="btn btn-outline-success"><i class="bi bi-gift"></i> Ajouter un souhait</a>
         </div>
 
-        <div class="container px-5 py-5">
+        <div class="container py-5">
             <h1>
                 <i class="bi bi-arrow-left-right"></i> 
                 <small class="text-muted">Échange</small>
