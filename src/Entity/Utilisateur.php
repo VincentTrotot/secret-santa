@@ -15,6 +15,12 @@ use Symfony\Component\Validator\Constraints\Cascade;
 #[UniqueEntity(fields: ['pseudo'], message: 'There is already an account with this pseudo')]
 class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
 {
+
+    public const USER = 'ROLE_USER';
+    public const ADMIN = 'ROLE_ADMIN';
+    public const PARTICIPANT = 'ROLE_PARTICIPANT';
+    public const SPECTATEUR = 'ROLE_SPECTATEUR';
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
@@ -189,6 +195,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
      */
     public function getUtilisateursInterdits(): Collection
     {
+        $this->addUtilisateursInterdit($this);
         return $this->utilisateursInterdits;
     }
 
