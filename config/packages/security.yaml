@@ -34,7 +34,6 @@ security:
     role_hierarchy:
         ROLE_SPECTATEUR: ROLE_USER
         ROLE_PARTICIPANT: ROLE_SPECTATEUR
-        ROLE_ADMIN: ROLE_PARTICIPANT
     access_control:
         # - { path: ^/admin, roles: ROLE_ADMIN }
         - { path: ^/compte, roles: ROLE_USER }

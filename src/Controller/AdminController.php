@@ -106,6 +106,7 @@ class AdminController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
 
+            $utilisateur->removeUtilisateursInterdit($utilisateur);
             $utilisateurRepository->add($utilisateur, true);
             $this->addFlash('success', 'L\'utilisateur a été modifié.');
             return $this->redirectToRoute('admin_utilisateurs');

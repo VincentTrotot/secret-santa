@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\Utilisateur;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Validator\Constraints\IsTrue;
@@ -35,17 +36,28 @@ class UtilisateurType extends AbstractType
                     'placeholder' => 'jj/mm/aaaa',
                 ],
             ])
-            ->add('roles', ChoiceType::class, array(
-                'choices' => array(
-                    'Utilisateur' => Utilisateur::USER,
-                    'Spectateur' => Utilisateur::SPECTATEUR,
-                    'Participant' => Utilisateur::PARTICIPANT,
-                    'Admin' => Utilisateur::ADMIN,
-                ),
-                'label' => 'Role :',
+            ->add('utilisateursInterdits', EntityType::class, array(
+                'class' => Utilisateur::class,
+
+                'label' => 'Utilisateur(s) interdit(s)',
                 'expanded' => true,
                 'multiple' => true
-            ));
+            ))
+            ->add(
+                'roles',
+                ChoiceType::class,
+                array(
+                    'choices' => array(
+                        'Utilisateur' => Utilisateur::USER,
+                        'Spectateur' => Utilisateur::SPECTATEUR,
+                        'Participant' => Utilisateur::PARTICIPANT,
+                        'Admin' => Utilisateur::ADMIN,
+                    ),
+                    'label' => 'Role :',
+                    'expanded' => true,
+                    'multiple' => true
+                )
+            );
     }
 
     public function configureOptions(OptionsResolver $resolver): void

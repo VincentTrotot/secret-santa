@@ -7,7 +7,7 @@
     <div class="container py-5">
         <h1>
             <i class="bi bi-person-fill"></i> 
-            <small class="text-muted">{{ app.user }}</small>
+            <small class="text-muted">{{ app.user }} ({{ app.user.pseudo}})</small>
         </h1>
         {% if is_granted('ROLE_SPECTATEUR') %}
             {{ component('liste', {'id': app.user.id}) }}

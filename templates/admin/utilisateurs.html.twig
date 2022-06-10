@@ -8,6 +8,7 @@
             <tr>
                 <th>#</th>
                 <th>Utilisateur</th>
+                <th></th>
                 <th>Date de naissance</th>
                 <th>Rôles</th>
                 <th></th>
@@ -17,6 +18,7 @@
             {% for utilisateur in utilisateurs %}
                 <tr>
                     <td>{{ loop.index }}</td>
+                    <td>{{ utilisateur.pseudo }}</td>
                     <td>{{ utilisateur.prenom }} {{ utilisateur.nom}}</td>
                     <td>{{ utilisateur.dateDeNaissance | date('d/m/Y') }}</td>
                     <td>{{ utilisateur.roles | join(' / ') | lower() }}</td>
