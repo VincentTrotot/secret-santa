@@ -56,7 +56,7 @@ class UtilisateurRepository extends ServiceEntityRepository implements PasswordU
         $this->add($user, true);
     }
 
-    public function findAll(): array
+    public function findAllParticipants(): array
     {
         return $this->createQueryBuilder('u')
             ->select('u, s')

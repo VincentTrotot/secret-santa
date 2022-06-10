@@ -39,7 +39,7 @@ security:
         # - { path: ^/admin, roles: ROLE_ADMIN }
         - { path: ^/compte, roles: ROLE_USER }
         - { path: ^/compte/*, roles: ROLE_SPECTATEUR }
-        - { path: ^/tirage, roles: ROLE_ADMIN }
+        - { path: ^/admin, roles: ROLE_ADMIN }
 
 when@test:
     security:

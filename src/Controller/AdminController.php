@@ -10,13 +10,13 @@ use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-#[Route('/tirage')]
-class TirageController extends AbstractController
+#[Route('/admin')]
+class AdminController extends AbstractController
 {
     #[Route('/', name: 'tirage_check')]
     public function check(UtilisateurRepository $utilisateurRepository): Response
     {
-        $utilisateurs = $utilisateurRepository->findAll();
+        $utilisateurs = $utilisateurRepository->findAllParticipants();
         usort($utilisateurs, function ($a, $b) {
             if ($a->getUtilisateurTire() === null) {
                 return 1;
@@ -36,7 +36,7 @@ class TirageController extends AbstractController
     #[Route('/reveal', name: 'tirage_reveal')]
     public function reveal(UtilisateurRepository $utilisateurRepository): Response
     {
-        $utilisateurs = $utilisateurRepository->findAll();
+        $utilisateurs = $utilisateurRepository->findAllParticipants();
 
         return $this->render('tirage/reveal.html.twig', [
             'utilisateurs' => $utilisateurs,
@@ -46,8 +46,9 @@ class TirageController extends AbstractController
     #[Route('/make', name: 'tirage_make')]
     public function make(ManagerRegistry $doctrine, UtilisateurRepository $utilisateurRepository): Response
     {
-        $utilisateurs = new ArrayCollection($utilisateurRepository->findAll());
-        foreach ($utilisateurs as $utilisateur) {
+        $allUtilisateurs = $utilisateurRepository->findAll();
+        $utilisateurs = new ArrayCollection($utilisateurRepository->findAllParticipants());
+        foreach ($allUtilisateurs as $utilisateur) {
             $utilisateur->setUtilisateurTire(null);
             $utilisateurRepository->add($utilisateur);
         }
@@ -77,5 +78,14 @@ class TirageController extends AbstractController
         $doctrine->getManager()->flush();
 
         return $this->redirectToRoute('tirage_check');
+    }
+
+    #[Route('/utilisateurs', name: 'admin_utilisateurs')]
+    public function utilisateurs(UtilisateurRepository $utilisateurRepository): Response
+    {
+        $utilisateurs = $utilisateurRepository->findAll();
+        return $this->render('admin/utilisateurs.html.twig', [
+            'utilisateurs' => $utilisateurs,
+        ]);
     }
 }

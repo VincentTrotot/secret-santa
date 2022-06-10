@@ -184,7 +184,7 @@ class UtilisateurController extends AbstractController
     #[Route('/tirage', name: 'compte_tirage')]
     public function tirage(UtilisateurRepository $utilisateurRepository): Response
     {
-        $utilisateurs = $utilisateurRepository->findAll();
+        $utilisateurs = $utilisateurRepository->findAllParticipants();
         usort($utilisateurs, function ($a, $b) {
             if ($a->getUtilisateurTire() === null) {
                 return 1;
