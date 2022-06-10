@@ -1,29 +1,12 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="{{ path('home') }}">Le_bonnet</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        {% if app.user %}
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-          <a class="nav-link{% if app.request.get('_route') == 'compte_index' %} active{% endif %}"{% if app.request.get('_route') == 'compte_index' %} aria-current="page"{% endif %} href="{{ path('compte_index') }}"><i class="bi bi-person-fill"></i> Mon compte</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link{% if app.request.get('_route') == 'compte_listes' %} active{% endif %}"{% if app.request.get('_route') == 'compte_listes' %} aria-current="page"{% endif %} href="{{ path('compte_listes') }}"><i class="bi bi-box2-heart"></i> Listes</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link{% if app.request.get('_route') == 'compte_tirage' %} active{% endif %}"{% if app.request.get('_route') == 'compte_tirage' %} aria-current="page"{% endif %} href="{{ path('compte_tirage') }}"><i class="bi bi-card-checklist"></i> Tirage</a>
-        </li>
-      </ul>
-        <ul class="navbar-nav d-flex ms-auto mb-2 mb-lg-0">
-          <li class="nav-item">
-              <a class="nav-link" href="{{ path('app_logout') }}">Se déconnecter</a>
-          </li>
-        </ul>
-          {% endif %}
-      
-    </div>
-  </div>
+<nav class="navbar-header">
+    <span class="menu-toggle" onclick="openMenu()">&#9776;</span>
+    <a class="" href="{{ path('home') }}">Le_bonnet</a>
 </nav>
+{% if app.user %}
+<nav class="menu" id="menu">
+        <a class="nav-link{% if app.request.get('_route') == 'compte_index' %} active{% endif %}"{% if app.request.get('_route') == 'compte_index' %} aria-current="page"{% endif %} href="{{ path('compte_index') }}"><i class="bi bi-person-fill"></i> Mon compte</a>
+        <a class="nav-link{% if app.request.get('_route') == 'compte_listes' %} active{% endif %}"{% if app.request.get('_route') == 'compte_listes' %} aria-current="page"{% endif %} href="{{ path('compte_listes') }}"><i class="bi bi-box2-heart"></i> Listes</a>
+        <a class="nav-link{% if app.request.get('_route') == 'compte_tirage' %} active{% endif %}"{% if app.request.get('_route') == 'compte_tirage' %} aria-current="page"{% endif %} href="{{ path('compte_tirage') }}"><i class="bi bi-card-checklist"></i> Tirage</a>
+        <a class="nav-link" href="{{ path('app_logout') }}">Se déconnecter</a>
+</nav>
+{% endif %}

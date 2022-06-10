@@ -1,0 +1,20 @@
+.home {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    flex-direction: column;
+}
+
+.home h1 {
+    font-size: 3.5em;
+    font-weight: bold;
+}
+
+.home a {
+    text-decoration: none;
+    font-size: 1em;
+    color: var(--main-color);
+    font-style: italic;
+}
