@@ -44,6 +44,7 @@ class UtilisateurController extends AbstractController
     #[Route('/listes/ajouter', name: 'compte_ajouter_souhait')]
     public function ajouterSouhait(Request $request, SouhaitRepository $souhaitRepository): Response
     {
+
         $souhait = new Souhait();
         $souhait->setEmetteur($this->getUser());
         $souhait->setAchete(false);
@@ -53,7 +54,8 @@ class UtilisateurController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $souhaitRepository->add($souhait, true);
             $this->addFlash('success', 'Votre souhait a bien été ajouté.');
-            return $this->redirectToRoute('compte_listes');
+
+            return $this->redirectToRoute('compte_index');
         }
 
         return $this->renderForm('utilisateur/ajouter_souhait.html.twig', [
@@ -89,12 +91,12 @@ class UtilisateurController extends AbstractController
                 $souhait->getDestinataire() !== $this->getUser()
             ) {
                 $this->addFlash('danger', 'Vous n\'avez pas le droit de modifier ce souhait.');
-                return $this->redirectToRoute('compte_listes');
+                return $this->redirectToRoute('compte_index');
             }
 
             $souhaitRepository->add($souhait, true);
             $this->addFlash('success', 'Votre souhait a bien été modifié.');
-            return $this->redirectToRoute('compte_listes');
+            return $this->redirectToRoute('compte_index');
         }
 
         return $this->renderForm('utilisateur/modifier_souhait.html.twig', [
@@ -110,7 +112,7 @@ class UtilisateurController extends AbstractController
 
         if ($souhait == null) {
             $this->addFlash('info', 'Ce souhait n\'existe pas.');
-            return $this->redirectToRoute('compte_listes');
+            return $this->redirectToRoute('compte_index');
         }
 
         if (
@@ -118,7 +120,7 @@ class UtilisateurController extends AbstractController
             $souhait->getDestinataire() !== $this->getUser()
         ) {
             $this->addFlash('danger', 'Vous n\'avez pas le droit de supprimer ce souhait.');
-            return $this->redirectToRoute('compte_listes');
+            return $this->redirectToRoute('compte_index');
         }
 
         if ($this->isCsrfTokenValid('delete' . $souhait->getId(), $request->request->get('_token'))) {
@@ -136,12 +138,12 @@ class UtilisateurController extends AbstractController
 
         if ($souhait == null) {
             $this->addFlash('info', 'Ce souhait n\'existe pas.');
-            return $this->redirectToRoute('compte_listes');
+            return $this->redirectToRoute('compte_index');
         }
 
         if ($souhait->isAchete()) {
             $this->addFlash('info', 'Ce souhait a déjà été acheté.');
-            return $this->redirectToRoute('compte_listes');
+            return $this->redirectToRoute('compte_index');
         }
 
         if ($this->isCsrfTokenValid('buy' . $souhait->getId(), $request->request->get('_token'))) {
@@ -151,7 +153,7 @@ class UtilisateurController extends AbstractController
             $this->addFlash('success', 'Votre souhait a bien été marqué comme acheté.');
         }
 
-        return $this->redirectToRoute('compte_listes', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('compte_index', [], Response::HTTP_SEE_OTHER);
     }
 
     #[Route('/listes/rendre/{id}', name: 'compte_rendre_souhait', methods: ['POST'])]
@@ -161,12 +163,12 @@ class UtilisateurController extends AbstractController
 
         if ($souhait == null) {
             $this->addFlash('info', 'Ce souhait n\'existe pas.');
-            return $this->redirectToRoute('compte_listes');
+            return $this->redirectToRoute('compte_index');
         }
 
         if (!$souhait->isAchete()) {
             $this->addFlash('info', 'Ce souhait n\'a pas été acheté.');
-            return $this->redirectToRoute('compte_listes');
+            return $this->redirectToRoute('compte_index');
         }
 
         if ($this->isCsrfTokenValid('unbuy' . $souhait->getId(), $request->request->get('_token'))) {
@@ -176,7 +178,7 @@ class UtilisateurController extends AbstractController
             $this->addFlash('success', 'La marque d\'achat a bien été enlevée.');
         }
 
-        return $this->redirectToRoute('compte_listes', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('compte_index', [], Response::HTTP_SEE_OTHER);
     }
 
     #[Route('/tirage', name: 'compte_tirage')]

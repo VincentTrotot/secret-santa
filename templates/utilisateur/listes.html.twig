@@ -4,10 +4,6 @@
 
 {% block body %}
 
-<div class="mt-5">
-    <a href="{{ path('compte_ajouter_souhait') }}" class="btn btn-success">Ajouter</a>
-</div>
-
 {% for utilisateur in utilisateurs %}
     {% if utilisateur.souhaits is not empty or utilisateur == app.user.utilisateurTire %}
         {{ component('liste', {'id': utilisateur.id })}}

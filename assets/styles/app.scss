@@ -1,3 +1,6 @@
+$primary: rgb(0, 0, 75);
+$success: rgb(41, 150, 8);
+
 @import "~bootstrap/scss/bootstrap";
 @import "~bootstrap-icons/font/bootstrap-icons";
 
@@ -6,6 +9,12 @@
 @import "src/fonts";
 @import "src/home";
 @import "src/navbar";
+
+.btn-outline-success:hover,
+.btn-success:hover,
+.btn-success {
+    color: var(--secondary-color);
+}
 
 @media screen and (max-width: 768px) {
     .responsive-flex {

@@ -17,13 +17,13 @@
                         <td>{{ demande.date | date('d/m/Y') }}</td>
                         <td>
                             {% if demande.status == 'en_attente' %}
-                                <span class="badge rounded-pill bg-info">en attente</span>
+                                <span class="badge rounded-pill bg-warning">en attente</span>
                             {% elseif demande.status == 'accepte' %}
                                 <span class="badge rounded-pill bg-success">acceptée</span>
                             {% elseif demande.status == 'refuse' %}
                                 <span class="badge rounded-pill bg-danger">refusée</span>
                             {% else %}
-                                <span class="badge rounded-pill bg-danger">annulée</span>
+                                <span class="badge rounded-pill bg-info">annulée</span>
                             {% endif %}
                         </td>
                         <td>
