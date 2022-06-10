@@ -22,7 +22,9 @@ class SouhaitType extends AbstractType
                 'query_builder' => function (UtilisateurRepository $repository) {
                     return $repository->createQueryBuilder('u')
                         ->where('u.roles LIKE :role')
+                        ->orWhere('u.roles  LIKE :role2')
                         ->setParameter('role', '%ROLE_PARTICIPANT%')
+                        ->setParameter('role2', '%ROLE_SPECTATEUR%')
                         ->orderBy('u.dateDeNaissance', 'ASC');
                 },
             ]);
