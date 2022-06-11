@@ -20,6 +20,7 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     public const ADMIN = 'ROLE_ADMIN';
     public const PARTICIPANT = 'ROLE_PARTICIPANT';
     public const SPECTATEUR = 'ROLE_SPECTATEUR';
+    public const NOT_ACTIVE = 'ROLE_NOT_ACTIVE';
 
     #[ORM\Id]
     #[ORM\GeneratedValue]

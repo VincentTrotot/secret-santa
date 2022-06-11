@@ -48,7 +48,7 @@ class UtilisateurType extends AbstractType
                 ChoiceType::class,
                 array(
                     'choices' => array(
-                        'Utilisateur' => Utilisateur::USER,
+                        'Non actif' => Utilisateur::NOT_ACTIVE,
                         'Spectateur' => Utilisateur::SPECTATEUR,
                         'Participant' => Utilisateur::PARTICIPANT,
                         'Admin' => Utilisateur::ADMIN,

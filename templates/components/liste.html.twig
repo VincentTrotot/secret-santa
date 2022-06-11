@@ -1,9 +1,6 @@
 {% if is_granted('ROLE_SPECTATEUR') %}
 
     <div class="mt-5">
-            <a href="{{ path('compte_ajouter_souhait') }}" class="btn btn-outline-success"><i class="bi bi-gift"></i> Ajouter un souhait</a>
-        </div>
-    <div class="mt-5">
         <h3 {% if this.utilisateur == app.user.utilisateurTire %}class="text-primary"{% endif %}>
             {% if this.utilisateur == app.user %}
                 Ma liste

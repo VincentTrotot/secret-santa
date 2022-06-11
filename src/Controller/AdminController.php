@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Form\UtilisateurType;
+use App\Repository\EchangeRepository;
 use App\Repository\UtilisateurRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
@@ -45,9 +46,9 @@ class AdminController extends AbstractController
     }
 
     #[Route('/tirage/make', name: 'tirage_make')]
-    public function make(ManagerRegistry $doctrine, UtilisateurRepository $utilisateurRepository): Response
+    public function make(ManagerRegistry $doctrine, UtilisateurRepository $utilisateurRepository, EchangeRepository $echangeRepository): Response
     {
-        $this->resetTirage($doctrine, $utilisateurRepository);
+        $this->resetTirage($doctrine, $utilisateurRepository, $echangeRepository);
 
         $utilisateurs = new ArrayCollection($utilisateurRepository->findAllParticipants());
         do {
@@ -78,9 +79,9 @@ class AdminController extends AbstractController
     }
 
     #[Route('/tirage/reset', name: 'tirage_reset')]
-    public function reset(ManagerRegistry $doctrine, UtilisateurRepository $utilisateurRepository): Response
+    public function reset(ManagerRegistry $doctrine, UtilisateurRepository $utilisateurRepository, EchangeRepository $echangeRepository): Response
     {
-        $this->resetTirage($doctrine, $utilisateurRepository);
+        $this->resetTirage($doctrine, $utilisateurRepository, $echangeRepository);
         return $this->redirectToRoute('tirage_check');
     }
 
@@ -120,12 +121,16 @@ class AdminController extends AbstractController
         ]);
     }
 
-    private function resetTirage(ManagerRegistry $doctrine, UtilisateurRepository $utilisateurRepository): void
+    private function resetTirage(ManagerRegistry $doctrine, UtilisateurRepository $utilisateurRepository, EchangeRepository $echangeRepository): void
     {
         $allUtilisateurs = $utilisateurRepository->findAll();
         foreach ($allUtilisateurs as $utilisateur) {
             $utilisateur->setUtilisateurTire(null);
             $utilisateurRepository->add($utilisateur);
+        }
+        $echanges = $echangeRepository->findAll();
+        foreach ($echanges as $echange) {
+            $echangeRepository->remove($echange);
         }
         $doctrine->getManager()->flush();
     }

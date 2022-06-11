@@ -28,4 +28,5 @@ Un projet symfony qui permet de gérer un secret santa.
 -   [x] Faire les vues
 -   [x] Faire les vues pour mobiles
 -   [x] Faire le système d'échange de personne tirée
+-   [x] Reset les échanges au moment du reset du tirage
 

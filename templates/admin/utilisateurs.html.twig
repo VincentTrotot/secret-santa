@@ -8,8 +8,8 @@
             <tr>
                 <th>#</th>
                 <th>Utilisateur</th>
-                <th></th>
                 <th>Date de naissance</th>
+                <th>Ne peut pas tirer</th>
                 <th>Rôles</th>
                 <th></th>
             </tr>
@@ -18,10 +18,24 @@
             {% for utilisateur in utilisateurs %}
                 <tr>
                     <td>{{ loop.index }}</td>
-                    <td>{{ utilisateur.pseudo }}</td>
-                    <td>{{ utilisateur.prenom }} {{ utilisateur.nom}}</td>
+                    <td>{{ utilisateur.prenom }} {{ utilisateur.nom}} [{{ utilisateur.pseudo }}]</td>
                     <td>{{ utilisateur.dateDeNaissance | date('d/m/Y') }}</td>
-                    <td>{{ utilisateur.roles | join(' / ') | lower() }}</td>
+                    <td>{{ utilisateur.utilisateursInterdits | join(', ', ' et ') }}</td>
+                    <td>
+                        {% for role in utilisateur.roles %}
+                            
+                            {% if role == 'ROLE_SPECTATEUR' %}
+                                <span class="badge rounded-pill bg-warning">spectateur</span>
+                            {% elseif role == 'ROLE_PARTICIPANT' %}
+                                <span class="badge rounded-pill bg-primary">participant</span>
+                            {% elseif role == 'ROLE_ADMIN' %}
+                                <span class="badge rounded-pill bg-success">admin</span>
+                            {% elseif role == 'ROLE_NOT_ACTIVE' %}
+                                <span class="badge rounded-pill bg-danger">non actif</span>
+                            {% endif %}
+                            
+                        {% endfor %}
+                    </td>
                     <td><a href="{{ path('admin_modifier_utilisateur', {'id': utilisateur.id}) }}" class="btn btn-small btn-primary">Modifier</a></td>
                 </tr>
             {% endfor %}

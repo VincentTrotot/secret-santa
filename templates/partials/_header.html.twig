@@ -1,6 +1,6 @@
 <nav class="navbar-header">
     <span class="menu-toggle" onclick="openMenu()">&#9776;</span>
-    <a class="" href="{{ path('home') }}">Le_bonnet</a>
+    <a class="" href="{% if is_granted('ROLE_SPECTATEUR') %}{{ path('compte_index') }}{% else %}{{ path('home') }}{% endif %}">Le_bonnet</a>
 </nav>
 {% if app.user %}
 <nav class="menu" id="menu">

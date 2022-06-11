@@ -6,12 +6,23 @@
     <h1>Modifier un utilisateur</h1>
 
     {{ form_start(form) }}
-        {{ form_row(form.prenom) }}
-        {{ form_row(form.nom) }}
-        {{ form_row(form.dateDeNaissance) }}
-        {{ form_row(form.utilisateursInterdits) }}
-        {{ form_row(form.roles) }}
 
-        <button type="submit" class="btn btn-success">Modifier l'utilisateur</button>
+        <div class="container">
+            <div class="row">
+                <div class="col">{{ form_row(form.prenom) }}</div>
+                <div class="col">{{ form_row(form.nom) }}</div>
+            </div>
+            <div class="row">
+                <div class="col">{{ form_row(form.dateDeNaissance) }}</div>
+            </div>
+            <div class="row">
+                <div class="col">{{ form_row(form.utilisateursInterdits) }}</div>
+                <div class="col">{{ form_row(form.roles) }}</div>
+            </div>
+            <div class="col">
+                <button type="submit" class="btn btn-success">Modifier l'utilisateur</button>
+            </div>
+        </div>
+
     {{ form_end(form) }}
 {% endblock %}

@@ -36,7 +36,7 @@ class RegistrationController extends AbstractController
                 )
             );
             $user->setPseudo(mb_strtolower($user->getPrenom() . '.' . $user->getNom()));
-            $user->setRoles(['ROLE_NOT_ACTIVE']);
+            $user->setRoles([Utilisateur::NOT_ACTIVE]);
             $entityManager->persist($user);
             $entityManager->flush();
             // do anything else you need here, like send an email

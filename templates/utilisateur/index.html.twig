@@ -9,11 +9,15 @@
             <i class="bi bi-person-fill"></i> 
             <small class="text-muted">{{ app.user }} ({{ app.user.pseudo}})</small>
         </h1>
-        {{ component('liste', {'id': app.user.id}) }}
-        
-        {% if not(is_granted('ROLE_ADMIN')) or not(is_granted('ROLE_SPECTATEUR'))  %}
+        {% if is_granted('ROLE_NOT_ACTIVE')  %}
             Votre compte n'est pas encore actif.
+        {% else %}
+             <div class="mt-5">
+                <a href="{{ path('compte_ajouter_souhait') }}" class="btn btn-outline-success"><i class="bi bi-gift"></i> Ajouter un souhait</a>
+            </div>
         {% endif %}
+        
+        {{ component('liste', {'id': app.user.id}) }}
     </div>
 
 {% if is_granted('ROLE_PARTICIPANT') %}
