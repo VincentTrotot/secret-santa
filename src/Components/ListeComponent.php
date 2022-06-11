@@ -3,6 +3,7 @@
 namespace App\Components;
 
 use App\Entity\Utilisateur;
+use App\Repository\SouhaitRepository;
 use App\Repository\UtilisateurRepository;
 use Symfony\UX\TwigComponent\Attribute\AsTwigComponent;
 

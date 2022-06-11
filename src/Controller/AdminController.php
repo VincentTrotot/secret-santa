@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\Utilisateur;
 use App\Form\UtilisateurType;
 use App\Repository\UtilisateurRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -15,7 +14,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 #[Route('/admin')]
 class AdminController extends AbstractController
 {
-    #[Route('/', name: 'tirage_check')]
+    #[Route('/tirage', name: 'tirage_check')]
     public function check(UtilisateurRepository $utilisateurRepository): Response
     {
         $utilisateurs = $utilisateurRepository->findAllParticipants();
@@ -35,7 +34,7 @@ class AdminController extends AbstractController
         ]);
     }
 
-    #[Route('/reveal', name: 'tirage_reveal')]
+    #[Route('/tirage/reveal', name: 'tirage_reveal')]
     public function reveal(UtilisateurRepository $utilisateurRepository): Response
     {
         $utilisateurs = $utilisateurRepository->findAllParticipants();
@@ -45,16 +44,12 @@ class AdminController extends AbstractController
         ]);
     }
 
-    #[Route('/make', name: 'tirage_make')]
+    #[Route('/tirage/make', name: 'tirage_make')]
     public function make(ManagerRegistry $doctrine, UtilisateurRepository $utilisateurRepository): Response
     {
-        $allUtilisateurs = $utilisateurRepository->findAll();
+        $this->resetTirage($doctrine, $utilisateurRepository);
+
         $utilisateurs = new ArrayCollection($utilisateurRepository->findAllParticipants());
-        foreach ($allUtilisateurs as $utilisateur) {
-            $utilisateur->setUtilisateurTire(null);
-            $utilisateurRepository->add($utilisateur);
-        }
-        $doctrine->getManager()->flush();
         do {
             $utilisateurs_copie = clone $utilisateurs;
 
@@ -79,6 +74,13 @@ class AdminController extends AbstractController
         }
         $doctrine->getManager()->flush();
 
+        return $this->redirectToRoute('tirage_check');
+    }
+
+    #[Route('/tirage/reset', name: 'tirage_reset')]
+    public function reset(ManagerRegistry $doctrine, UtilisateurRepository $utilisateurRepository): Response
+    {
+        $this->resetTirage($doctrine, $utilisateurRepository);
         return $this->redirectToRoute('tirage_check');
     }
 
@@ -116,5 +118,15 @@ class AdminController extends AbstractController
             'utilisateur' => $utilisateur,
             'form' => $form,
         ]);
+    }
+
+    private function resetTirage(ManagerRegistry $doctrine, UtilisateurRepository $utilisateurRepository): void
+    {
+        $allUtilisateurs = $utilisateurRepository->findAll();
+        foreach ($allUtilisateurs as $utilisateur) {
+            $utilisateur->setUtilisateurTire(null);
+            $utilisateurRepository->add($utilisateur);
+        }
+        $doctrine->getManager()->flush();
     }
 }
