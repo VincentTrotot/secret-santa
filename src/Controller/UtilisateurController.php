@@ -94,6 +94,7 @@ class UtilisateurController extends AbstractController
                 return $this->redirectToRoute('compte_index');
             }
 
+            $souhait->setUpdatedAt(new \DateTimeImmutable());
             $souhaitRepository->add($souhait, true);
             $this->addFlash('success', 'Votre souhait a bien été modifié.');
             return $this->redirectToRoute('compte_index');

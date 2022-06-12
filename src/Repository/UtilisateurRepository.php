@@ -64,6 +64,7 @@ class UtilisateurRepository extends ServiceEntityRepository implements PasswordU
             ->where('u.roles LIKE :role')
             ->setParameter('role', '%' . Utilisateur::PARTICIPANT . '%')
             ->orderBy('u.dateDeNaissance', 'ASC')
+            ->addOrderBy('s.createdAt', 'DESC')
             ->addOrderBy('s.nom', 'ASC')
             ->getQuery()
             ->getResult();
@@ -79,6 +80,7 @@ class UtilisateurRepository extends ServiceEntityRepository implements PasswordU
             ->setParameter('role', '%' . Utilisateur::PARTICIPANT . '%')
             ->setParameter('role2', '%' . Utilisateur::SPECTATEUR . '%')
             ->orderBy('u.dateDeNaissance', 'ASC')
+            ->addOrderBy('s.createdAt', 'DESC')
             ->addOrderBy('s.nom', 'ASC')
             ->getQuery()
             ->getResult();

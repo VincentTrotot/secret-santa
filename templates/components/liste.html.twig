@@ -1,36 +1,58 @@
 {% if is_granted('ROLE_SPECTATEUR') %}
 
     <div class="mt-5">
-        <h3 {% if this.utilisateur == app.user.utilisateurTire %}class="text-primary"{% endif %}>
+        <h2 {% if this.utilisateur == app.user.utilisateurTire %}class="text-primary"{% endif %}>
             {% if this.utilisateur == app.user %}
                 Ma liste
             {% else %}    
-                {% if this.utilisateur == app.user.utilisateurTire %}<i class="bi bi-gift"></i>{% endif %} La liste de {{ this.utilisateur }}
+                {% if this.utilisateur == app.user.utilisateurTire %}
+                    <i class="bi bi-gift"></i>
+                {% endif %} La liste {% if  this.utilisateur.prenom|first|lower in ['a', 'e', 'i', 'o', 'u', 'y'] %}d'{% else %}de {% endif %}{{ this.utilisateur }}
             {% endif %}
-        </h3>
+        </h2>
 
-        <ul class="list-group list-group-flush list-group-item-action">
         {% if this.utilisateur.souhaits is not empty %}
-        {% for souhait in this.utilisateur.souhaits %}
-            <a href="{{ path('compte_modifier_souhait', {'id': souhait.id }) }}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-start responsive-flex">
-                {{ souhait }}
-                {% if souhait.destinataire != app.user and souhait.achete %}
-                    <span class="badge rounded-pill bg-primary">acheté{% if souhait.acheteur == app.user %} par moi{% endif %}</span>
-                {% endif %}
-                {% if souhait.emetteur != this.utilisateur %}
-                    <span class="badge rounded-pill bg-info">suggéré par {{ souhait.emetteur == app.user ? 'moi' : souhait.emetteur }}</span>
-                {% else %}
-                    <span class="badge rounded-pill bg-success">suggéré par {{ souhait.emetteur == app.user ? 'moi' : souhait.emetteur }}</span>
-                {% endif %}
-                
-            </a>
-        {% endfor %}
+        <div class="row row-cols-1 row-cols-md-2 row-cols-xl-4 g-4">
+            {% for souhait in this.utilisateur.souhaits %}
+                <div class="col">
+                    <div class="card h-100 border-{% if souhait.emetteur == this.utilisateur %}success{% else %}primary{% endif %}">
+                    <div class="card-header">
+                        <h4>{{ souhait }}</h4>
+                        <p>
+                            {% if souhait.emetteur != this.utilisateur %}
+                                <span class="align-middle badge rounded-pill bg-info">suggéré par {{ souhait.emetteur == app.user ? 'moi' : souhait.emetteur }}</span>
+                            {% else %}
+                                <span class="align-middle badge rounded-pill bg-success">suggéré par {{ souhait.emetteur == app.user ? 'moi' : souhait.emetteur }}</span>
+                            {% endif %}
+                            {% if souhait.destinataire != app.user and souhait.achete %}
+                                <span class="align-middle badge rounded-pill bg-primary">acheté{% if souhait.acheteur == app.user %} par moi{% endif %}</span>
+                            {% endif %}
+                        </p>
+                    </div>
+                        <div class="card-body">
+                            {{ souhait.informations }}
+                        </div>
+                            {% if souhait.lien %}
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item"><a href="{{ souhait.lien|raw }}">Voir le produit ou un exemple</a></li>
+                        </ul>
+                        {% endif %}
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">Ajouté le {{ souhait.createdAt | date('d/m/Y') }}</li>
+                            {% if souhait.updatedAt and souhait.updatedAt | date('d/m/Y') != souhait.createdAt | date('d/m/Y') %}<li class="list-group-item">Mis à jour le {{ souhait.updatedAt | date('d/m/Y') }}</li>{% endif %}
+                        </ul>
+                        <div class="card-footer text-center">
+                            <a href="{{ path('compte_modifier_souhait', {'id': souhait.id }) }}" class="btn btn-outline-{% if souhait.emetteur == this.utilisateur %}success{% else %}primary{% endif %} card-link"><i class="bi bi-gift"></i> Modifier ce souhait</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
         {% else %}
-            <li class="list-group-item list-group-item-action d-flex justify-content-between align-items-start">
+            <span class="list-group-item list-group-item-action d-flex justify-content-between align-items-start">
                 {{ this.utilisateur }} n'a pas encore de liste
-            </li>
+            </span>
         {% endif %}
-        </ul>
     </div>
 
 {% endif %}
