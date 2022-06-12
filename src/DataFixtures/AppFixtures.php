@@ -26,7 +26,9 @@ class AppFixtures extends Fixture
             $utilisateur = new Utilisateur();
             $nom = $faker->lastName;
             $prenom = $faker->firstName;
-            $utilisateur->setPseudo(mb_strtolower($prenom . '.' . $nom));
+            $utilisateur->setPseudo(
+                Utilisateur::remove_accents(mb_strtolower($prenom . '.' . $nom))
+            );
             $utilisateur->setNom($nom);
             $utilisateur->setPrenom($prenom);
             $utilisateur->setPassword($this->passwordHasher->hashPassword(
