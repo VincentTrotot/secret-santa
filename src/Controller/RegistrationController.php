@@ -35,7 +35,11 @@ class RegistrationController extends AbstractController
                     $form->get('plainPassword')->getData()
                 )
             );
-            $user->setPseudo(mb_strtolower($user->getPrenom() . '.' . $user->getNom()));
+            $user->setPseudo(
+                Utilisateur::remove_accents(
+                    mb_strtolower($user->getPrenom() . '.' . $user->getNom())
+                )
+            );
             $user->setRoles([Utilisateur::NOT_ACTIVE]);
             $entityManager->persist($user);
             $entityManager->flush();
