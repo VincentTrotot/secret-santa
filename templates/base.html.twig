@@ -12,27 +12,25 @@
 
         {% block javascripts %}
             {{ encore_entry_script_tags('app') }}
-           <script src=" {{ asset('assets/js/menu.js') }}" defer></script>
+           <script src="{{ asset('assets/js/menu.js') }}" defer></script>
         {% endblock %}
     </head>
-    <body>
+    <body class="d-flex flex-column h-100">
 
         {% include "partials/_header.html.twig" %}
         
-        <div class="container main-wrapper" onclick="closeMenu()">
+        <div class="container main-wrapper mb-5 flex-shrink-0" onclick="closeMenu()">
 
-            <div class="mt-5">
-                {% for label, messages in app.flashes %}
-                    {% for message in messages %}
-                        <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
-                            {{ message }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    {% endfor %}
+            {% for label, messages in app.flashes %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
                 {% endfor %}
-                
-                {% block body %}{% endblock %}
-            </div>
+            {% endfor %}
+            
+            {% block body %}{% endblock %}
 
         </div>
 
