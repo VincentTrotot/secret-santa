@@ -152,11 +152,7 @@ class AdminController extends AbstractController
         }
 
         if ($this->isCsrfTokenValid('update' . $utilisateur->getId(), $request->request->get('_token'))) {
-            if ($role == Utilisateur::NOT_ACTIVE) {
-                $utilisateur->setRoles([$role]);
-            } else {
-                $utilisateur->removeRole(Utilisateur::NOT_ACTIVE)->toggleRole($role);
-            }
+            $utilisateur->toggleRole($role);
             $utilisateurRepository->add($utilisateur, true);
             $this->addFlash('success', 'Le role a bien été ajouté.');
         }

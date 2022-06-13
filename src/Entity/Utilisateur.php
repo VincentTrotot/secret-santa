@@ -122,6 +122,18 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     public function addRole(string $role): self
     {
         if (!in_array($role, $this->roles)) {
+            if ($role == self::SPECTATEUR) {
+                $this->removeRole(self::PARTICIPANT);
+            } elseif ($role == self::PARTICIPANT) {
+                $this->removeRole(self::SPECTATEUR);
+            }
+            if ($role == Utilisateur::NOT_ACTIVE) {
+                $this->setRoles([$role]);
+                return $this;
+            } else {
+                $this->removeRole(Utilisateur::NOT_ACTIVE);
+            }
+
             $this->roles[] = $role;
         }
         return $this;
