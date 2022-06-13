@@ -4,10 +4,12 @@
 
 {% block body %}
     <a href="{{ path('compte_ajouter_souhait') }}" class="btn btn-outline-success"><i class="bi bi-gift"></i> Ajouter un souhait</a>
+<div class="accordion mt-5" id="listes">
 {% for utilisateur in utilisateurs %}
     {% if utilisateur.souhaits is not empty or utilisateur == app.user.utilisateurTire %}
         {{ component('liste', {'id': utilisateur.id })}}
     {% endif %}
 {% endfor %}
+</div>
 
 {% endblock %}

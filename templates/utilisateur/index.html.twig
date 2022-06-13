@@ -17,7 +17,9 @@
             </div>
         {% endif %}
         
-        {{ component('liste', {'id': app.user.id}) }}
+        <div class="accordion mt-5">
+            {{ component('liste', {'id': app.user.id}) }}
+        </div>
     </div>
 
 {% if is_granted('ROLE_PARTICIPANT') %}
@@ -28,7 +30,9 @@
                 <small class="text-muted">{{ app.user.utilisateurTire }}</small>
             </h1>
 
-        {{ component('liste', {'id': app.user.utilisateurTire.id}) }}
+        <div class="accordion mt-5">
+            {{ component('liste', {'id': app.user.utilisateurTire.id}) }}
+        </div>
     </div>
     {% endif %}
 
