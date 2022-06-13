@@ -18,10 +18,10 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-#[Route("/compte")]
+#[Route("/")]
 class UtilisateurController extends AbstractController
 {
-    #[Route('/', name: 'compte_index')]
+    #[Route('/compte', name: 'compte_index')]
     public function index(): Response
     {
         return $this->render('utilisateur/index.html.twig');

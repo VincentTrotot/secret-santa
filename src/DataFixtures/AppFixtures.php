@@ -72,7 +72,7 @@ class AppFixtures extends Fixture
             $manager->persist($utilisateur);
         }
 
-        for ($i = 0; $i < 3; $i++) {
+        for ($i = 0; $i < 2; $i++) {
             $utilisateur = new Utilisateur();
             $nom = $faker->lastName();
             $prenom = $faker->firstName();
@@ -94,6 +94,21 @@ class AppFixtures extends Fixture
             $manager->persist($utilisateur);
         }
 
+        $utilisateur = new Utilisateur();
+        $nom = 'Dupont';
+        $prenom = 'Jean';
+        $utilisateur->setPseudo(
+            Utilisateur::remove_accents(mb_strtolower($prenom . '.' . $nom))
+        );
+        $utilisateur->setNom($nom);
+        $utilisateur->setPrenom($prenom);
+        $utilisateur->setPassword($this->passwordHasher->hashPassword(
+            $utilisateur,
+            'password'
+        ));
+        $utilisateur->setRoles(['ROLE_SPECTATEUR']);
+        $utilisateur->setDateDeNaissance($faker->dateTimeBetween('-45 years', '-20 years'));
+        $manager->persist($utilisateur);
 
         $manager->flush();
     }
