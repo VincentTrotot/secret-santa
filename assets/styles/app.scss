@@ -17,6 +17,11 @@ $success: rgb(41, 150, 8);
     color: var(--secondary-color);
 }
 
+.btn-primary:hover {
+    color: var(--primary-color);
+    background-color: var(--secondary-color);
+}
+
 @media screen and (max-width: 768px) {
     .responsive-flex {
         flex-direction: column;

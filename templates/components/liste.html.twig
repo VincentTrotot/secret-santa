@@ -44,17 +44,17 @@
                             {% if souhait.updatedAt and souhait.updatedAt | date('d/m/Y') != souhait.createdAt | date('d/m/Y') %}<li class="list-group-item">Mis à jour le {{ souhait.updatedAt | date('d/m/Y') }}</li>{% endif %}
                         </ul>
                         <div class="card-footer text-center">
-                            <a href="{{ path('compte_modifier_souhait', {'id': souhait.id }) }}" class="btn btn-outline-{% if souhait.emetteur == this.utilisateur %}success{% else %}primary{% endif %} card-link"><i class="bi bi-gift"></i> Modifier ce souhait</a>
+                            <a href="{{ path('compte_modifier_souhait', {'id': souhait.id }) }}" class="btn btn-{% if souhait.emetteur == this.utilisateur %}success{% else %}primary{% endif %} card-link w-100"><i class="bi bi-gift"></i> Modifier ce souhait</a>
                             {% if souhait.destinataire != app.user %}
                                 {% if souhait.achete %}
                                     <form class="mt-2" method="post" action="{{ path('compte_rendre_souhait', {'id': souhait.id }) }}" onsubmit="return confirm('Voulez-vous vraiment enlever la marque d\'achat?');">
                                         <input type="hidden" name="_token" value="{{ csrf_token('unbuy' ~ souhait.id) }}">
-                                        <button class="btn btn-primary ">Enlever la marque d'achat</button>
+                                        <button class="btn btn-primary w-100">Enlever la marque d'achat</button>
                                     </form>
                                 {% else %}
                                     <form class="mt-2" method="post" action="{{ path('compte_acheter_souhait', {'id': souhait.id }) }}" onsubmit="return confirm('Voulez-vous vraiment marquer comme acheté ce souhait?');">
                                         <input type="hidden" name="_token" value="{{ csrf_token('buy' ~ souhait.id) }}">
-                                        <button class="btn btn-primary ">Marquer comme acheté</button>
+                                        <button class="btn btn-primary w-100">Marquer comme acheté</button>
                                     </form>
                                 {% endif %}
                             {% endif %}
