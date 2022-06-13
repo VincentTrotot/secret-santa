@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Utilisateur;
 use App\Form\UtilisateurType;
 use App\Repository\EchangeRepository;
 use App\Repository\UtilisateurRepository;
@@ -85,6 +86,7 @@ class AdminController extends AbstractController
         return $this->redirectToRoute('tirage_check');
     }
 
+
     #[Route('/utilisateurs', name: 'admin_utilisateurs')]
     public function utilisateurs(UtilisateurRepository $utilisateurRepository): Response
     {
@@ -119,6 +121,47 @@ class AdminController extends AbstractController
             'utilisateur' => $utilisateur,
             'form' => $form,
         ]);
+    }
+
+    #[Route('/utilisateur/supprimer/{id}', name: 'admin_supprimer_utilisateur', methods: ['POST'])]
+    public function supprimerUtilisateur(Request $request, UtilisateurRepository $utilisateurRepository, int $id): Response
+    {
+        $utilisateur = $utilisateurRepository->find($id);
+
+        if ($utilisateur == null) {
+            $this->addFlash('info', 'Cet utilisateur n\'existe pas.');
+            return $this->redirectToRoute('compte_index');
+        }
+
+        if ($this->isCsrfTokenValid('delete' . $utilisateur->getId(), $request->request->get('_token'))) {
+            $this->addFlash('success', 'L\'utilisateur a bien été supprimé.');
+            $utilisateurRepository->remove($utilisateur, true);
+        }
+
+        return $this->redirectToRoute('admin_utilisateurs');
+    }
+
+    #[Route('/utilisateur/{id}/role/{role}', name: 'admin_activer_role_utilisateur', methods: ['POST'])]
+    public function activerRoleUtilisateur(Request $request, UtilisateurRepository $utilisateurRepository, int $id, string $role): Response
+    {
+        $utilisateur = $utilisateurRepository->find($id);
+
+        if ($utilisateur == null) {
+            $this->addFlash('info', 'Cet utilisateur n\'existe pas.');
+            return $this->redirectToRoute('compte_index');
+        }
+
+        if ($this->isCsrfTokenValid('update' . $utilisateur->getId(), $request->request->get('_token'))) {
+            if ($role == Utilisateur::NOT_ACTIVE) {
+                $utilisateur->setRoles([$role]);
+            } else {
+                $utilisateur->removeRole(Utilisateur::NOT_ACTIVE)->toggleRole($role);
+            }
+            $utilisateurRepository->add($utilisateur, true);
+            $this->addFlash('success', 'Le role a bien été ajouté.');
+        }
+
+        return $this->redirectToRoute('admin_utilisateurs');
     }
 
     private function resetTirage(ManagerRegistry $doctrine, UtilisateurRepository $utilisateurRepository, EchangeRepository $echangeRepository): void

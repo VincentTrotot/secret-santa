@@ -36,7 +36,41 @@
                             
                         {% endfor %}
                     </td>
-                    <td><a href="{{ path('admin_modifier_utilisateur', {'id': utilisateur.id}) }}" class="btn btn-small btn-primary">Modifier</a></td>
+                    <td>
+                        <div class="btn-group">
+                            <a type="button" class="btn btn-outline-primary" href="{{ path('admin_modifier_utilisateur', {'id': utilisateur.id}) }}" class=""><i class="bi bi-pencil-square"></i></a>
+                            <button type="button" class="btn btn-outline-primary dropdown-toggle dropdown-toggle-split" data-bs-toggle="dropdown" aria-expanded="false">
+                                <span class="visually-hidden">Dérouler le menu</span>
+                            </button>
+                            <ul class="dropdown-menu">
+                            <li>
+                                <form method="post" action="{{ path('admin_activer_role_utilisateur', {'id': utilisateur.id, 'role': 'ROLE_SPECTATEUR' }) }}">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('update' ~ utilisateur.id) }}">
+                                    <button class="dropdown-item">Spectateur</button>
+                                </form>
+                            </li>
+                            <li>
+                                <form method="post" action="{{ path('admin_activer_role_utilisateur', {'id': utilisateur.id, 'role': 'ROLE_PARTICIPANT' }) }}">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('update' ~ utilisateur.id) }}">
+                                    <button class="dropdown-item">Participant</button>
+                                </form>
+                            </li>
+                            <li>
+                                <form method="post" action="{{ path('admin_activer_role_utilisateur', {'id': utilisateur.id, 'role': 'ROLE_NOT_ACTIVE' }) }}">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('update' ~ utilisateur.id) }}">
+                                    <button class="dropdown-item">Désactiver le compte</button>
+                                </form>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <form method="post" action="{{ path('admin_supprimer_utilisateur', {'id': utilisateur.id }) }}" onsubmit="return confirm('Voulez-vous vraiment supprimer cet utilisateur?');">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ utilisateur.id) }}">
+                                    <button class="dropdown-item">Supprimer l'utilisateur</button>
+                                </form>
+                            </li>
+                            </ul>
+                        </div>
+                    </td>
                 </tr>
             {% endfor %}
         </tbody>
