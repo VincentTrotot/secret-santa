@@ -4,17 +4,18 @@ namespace App\Controller;
 
 use App\Entity\Echange;
 use App\Entity\Souhait;
-use App\Entity\Utilisateur;
 use App\Form\EchangeType;
 use App\Form\SouhaitType;
+use App\Entity\Utilisateur;
 use App\Repository\EchangeRepository;
 use App\Repository\SouhaitRepository;
+use Doctrine\Persistence\ObjectManager;
 use App\Repository\UtilisateurRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use Doctrine\Persistence\ObjectManager;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 #[Route("/compte")]
@@ -49,11 +50,23 @@ class UtilisateurController extends AbstractController
         $souhait->setEmetteur($this->getUser());
         $souhait->setAchete(false);
         $form = $this->createForm(SouhaitType::class, $souhait);
+        $form->add('referer', HiddenType::class, [
+            'mapped' => false,
+            'attr' => [
+                'value' => $request->headers->get('referer'),
+            ],
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
             $souhaitRepository->add($souhait, true);
-            $this->addFlash('success', 'Votre souhait a bien été ajouté.');
+            $this->addFlash('success', 'Le souhait a bien été ajouté.');
+
+            $referer = $request->request->all()['souhait']['referer'];
+            if ($referer !== "") {
+                return $this->redirect($referer);
+            }
 
             return $this->redirectToRoute('compte_index');
         }
@@ -83,6 +96,12 @@ class UtilisateurController extends AbstractController
 
 
         $form = $this->createForm(SouhaitType::class, $souhait);
+        $form->add('referer', HiddenType::class, [
+            'mapped' => false,
+            'attr' => [
+                'value' => $request->headers->get('referer'),
+            ],
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -96,7 +115,13 @@ class UtilisateurController extends AbstractController
 
             $souhait->setUpdatedAt(new \DateTimeImmutable());
             $souhaitRepository->add($souhait, true);
-            $this->addFlash('success', 'Votre souhait a bien été modifié.');
+            $this->addFlash('success', 'Le souhait a bien été modifié.');
+
+            $referer = $request->request->all()['souhait']['referer'];
+            if ($referer !== "") {
+                return $this->redirect($referer);
+            }
+
             return $this->redirectToRoute('compte_index');
         }
 
@@ -113,7 +138,7 @@ class UtilisateurController extends AbstractController
 
         if ($souhait == null) {
             $this->addFlash('info', 'Ce souhait n\'existe pas.');
-            return $this->redirectToRoute('compte_index');
+            return $this->redirectToRoute('compte_listes');
         }
 
         if (
@@ -121,7 +146,7 @@ class UtilisateurController extends AbstractController
             $souhait->getDestinataire() !== $this->getUser()
         ) {
             $this->addFlash('danger', 'Vous n\'avez pas le droit de supprimer ce souhait.');
-            return $this->redirectToRoute('compte_index');
+            return $this->redirectToRoute('compte_listes');
         }
 
         if ($this->isCsrfTokenValid('delete' . $souhait->getId(), $request->request->get('_token'))) {
@@ -139,12 +164,12 @@ class UtilisateurController extends AbstractController
 
         if ($souhait == null) {
             $this->addFlash('info', 'Ce souhait n\'existe pas.');
-            return $this->redirectToRoute('compte_index');
+            return $this->redirectToRoute('compte_listes');
         }
 
         if ($souhait->isAchete()) {
             $this->addFlash('info', 'Ce souhait a déjà été acheté.');
-            return $this->redirectToRoute('compte_index');
+            return $this->redirectToRoute('compte_listes');
         }
 
         if ($this->isCsrfTokenValid('buy' . $souhait->getId(), $request->request->get('_token'))) {
@@ -154,7 +179,7 @@ class UtilisateurController extends AbstractController
             $this->addFlash('success', 'Votre souhait a bien été marqué comme acheté.');
         }
 
-        return $this->redirectToRoute('compte_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('compte_listes', [], Response::HTTP_SEE_OTHER);
     }
 
     #[Route('/listes/rendre/{id}', name: 'compte_rendre_souhait', methods: ['POST'])]
@@ -164,12 +189,12 @@ class UtilisateurController extends AbstractController
 
         if ($souhait == null) {
             $this->addFlash('info', 'Ce souhait n\'existe pas.');
-            return $this->redirectToRoute('compte_index');
+            return $this->redirectToRoute('compte_listes');
         }
 
         if (!$souhait->isAchete()) {
             $this->addFlash('info', 'Ce souhait n\'a pas été acheté.');
-            return $this->redirectToRoute('compte_index');
+            return $this->redirectToRoute('compte_listes');
         }
 
         if ($this->isCsrfTokenValid('unbuy' . $souhait->getId(), $request->request->get('_token'))) {
@@ -179,7 +204,7 @@ class UtilisateurController extends AbstractController
             $this->addFlash('success', 'La marque d\'achat a bien été enlevée.');
         }
 
-        return $this->redirectToRoute('compte_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('compte_listes', [], Response::HTTP_SEE_OTHER);
     }
 
     #[Route('/tirage', name: 'compte_tirage')]
