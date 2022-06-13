@@ -18,6 +18,6 @@ class EchangesComponent
 
     public function getEchanges(): array
     {
-        return $this->echangeRepository->findForUser($this->id);
+        return $this->echangeRepository->findForUtilisateur($this->id);
     }
 }

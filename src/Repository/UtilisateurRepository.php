@@ -70,7 +70,7 @@ class UtilisateurRepository extends ServiceEntityRepository implements PasswordU
             ->getResult();
     }
 
-    public function findAllByTire(?int $id): array
+    public function findAllWithThatIdFirst(?int $id): array
     {
         $results = $this->createQueryBuilder('u')
             ->select('u, s')

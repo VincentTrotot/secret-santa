@@ -39,7 +39,7 @@ class EchangeRepository extends ServiceEntityRepository
         }
     }
 
-    public function findForUser(int $id)
+    public function findForUtilisateur(int $id)
     {
         return $this->createQueryBuilder('e')
             ->select('e, u1, u2')

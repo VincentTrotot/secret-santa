@@ -33,7 +33,7 @@ class UtilisateurController extends AbstractController
         /** @var $utilisateur Utilisateur */
         $utilisateur = $this->getUser();
 
-        $utilisateurs = $utilisateurRepository->findAllByTire(
+        $utilisateurs = $utilisateurRepository->findAllWithThatIdFirst(
             $utilisateur->getUtilisateurTire()?->getId() ?? null
         );
 

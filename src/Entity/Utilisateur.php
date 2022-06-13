@@ -248,18 +248,12 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         if (!$this->utilisateursInterdits->contains($utilisateursInterdit)) {
             $this->utilisateursInterdits[] = $utilisateursInterdit;
         }
-
-        if (!$utilisateursInterdit->utilisateursInterdits->contains($this)) {
-            $utilisateursInterdit->utilisateursInterdits[] = $this;
-        }
         return $this;
     }
 
     public function removeUtilisateursInterdit(self $utilisateursInterdit): self
     {
         $this->utilisateursInterdits->removeElement($utilisateursInterdit);
-        $utilisateursInterdit->utilisateursInterdits->removeElement($this);
-
         return $this;
     }
 
