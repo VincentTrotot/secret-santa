@@ -39,6 +39,7 @@ security:
         - { path: ^/compte, roles: [ROLE_USER, ROLE_ADMIN] }
         - { path: ^/listes*, roles: [ROLE_SPECTATEUR, ROLE_ADMIN] }
         - { path: ^/tirage/*, roles: [ROLE_SPECTATEUR, ROLE_ADMIN] }
+        - { path: ^/echange*, roles: [ROLE_PARTICIPANT] }
         - { path: ^/admin, roles: ROLE_ADMIN }
 
 when@test:

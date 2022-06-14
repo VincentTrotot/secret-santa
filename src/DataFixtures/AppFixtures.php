@@ -73,10 +73,15 @@ class AppFixtures extends Fixture
 
         // Ajout des interdits
         $this->utilisateurs[1]->addUtilisateursInterdit($this->utilisateurs[2]);
+        $this->utilisateurs[2]->addUtilisateursInterdit($this->utilisateurs[1]);
         $this->utilisateurs[3]->addUtilisateursInterdit($this->utilisateurs[4]);
+        $this->utilisateurs[4]->addUtilisateursInterdit($this->utilisateurs[3]);
         $this->utilisateurs[5]->addUtilisateursInterdit($this->utilisateurs[6]);
+        $this->utilisateurs[6]->addUtilisateursInterdit($this->utilisateurs[5]);
         $this->utilisateurs[7]->addUtilisateursInterdit($this->utilisateurs[8]);
+        $this->utilisateurs[8]->addUtilisateursInterdit($this->utilisateurs[7]);
         $this->utilisateurs[9]->addUtilisateursInterdit($this->utilisateurs[10]);
+        $this->utilisateurs[10]->addUtilisateursInterdit($this->utilisateurs[9]);
 
         // Ajout du tirage
         $this->utilisateurs[0]->setUtilisateurTire($this->utilisateurs[1]);
@@ -161,6 +166,14 @@ class AppFixtures extends Fixture
         $echange->setStatus(Echange::STATUS_EN_ATTENTE);
         $echange->setDemandeur($this->utilisateurs[0]);
         $echange->setReceveur($this->utilisateurs[5]);
+
+        $manager->persist($echange);
+
+        $echange = new Echange();
+        $echange->setDate(new \DateTime());
+        $echange->setStatus(Echange::STATUS_EN_ATTENTE);
+        $echange->setDemandeur($this->utilisateurs[1]);
+        $echange->setReceveur($this->utilisateurs[10]);
 
         $manager->persist($echange);
         $manager->flush();

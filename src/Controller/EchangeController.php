@@ -35,8 +35,14 @@ class EchangeController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $echangeRepository->add($echange, true);
-            $this->addFlash('success', 'Votre demande d\'échange a bien été enregistrée.');
+            if ($echange->getReceveur()->getUtilisateursInterdits()->contains(
+                $echange->getDemandeur()->getUtilisateurTire()
+            )) {
+                $this->addFlash('danger', 'La personne avec qui vous voulez échanger ne peut pas avoir votre tirage.');
+            } else {
+                $echangeRepository->add($echange, true);
+                $this->addFlash('success', 'Votre demande d\'échange a bien été enregistrée.');
+            }
             return $this->redirectToRoute('compte_index');
         }
 

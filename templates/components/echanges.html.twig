@@ -38,7 +38,7 @@
                             {% if demande.status == 'en_attente' and app.user != demande.demandeur %}
                                 <form method="post" action="{{ path('compte_accepter_echange', {'id': demande.id }) }}" onsubmit="return confirm('Voulez-vous vraiment accpeter cet échange?');">
                                     <input type="hidden" name="_token" value="{{ csrf_token('accepte' ~ demande.id) }}">
-                                    <button class="btn btn-success "><i class="bi bi-check"></i></button>
+                                    <button class="btn btn-success">✓</button>
                                 </form>
                             {% endif %}
                         </td>
@@ -47,14 +47,14 @@
                                 {% if demande.status == 'en_attente' %}
                                     <form method="post" action="{{ path('compte_refuser_echange', {'id': demande.id }) }}" onsubmit="return confirm('Voulez-vous vraiment annuler cet échange?');">
                                         <input type="hidden" name="_token" value="{{ csrf_token('refuse' ~ demande.id) }}">
-                                        <button class="btn btn-danger "><i class="bi bi-x"></i></button>
+                                        <button class="btn btn-danger ">✖︎</i></button>
                                     </form>
                                 {% endif %}
                             {% else %}
                                 {% if demande.status == 'en_attente' %}
                                     <form method="post" action="{{ path('compte_refuser_echange', {'id': demande.id }) }}" onsubmit="return confirm('Voulez-vous vraiment refuser cet échange?');">
                                         <input type="hidden" name="_token" value="{{ csrf_token('refuse' ~ demande.id) }}">
-                                        <button class="btn btn-danger "><i class="bi bi-x"></i></button>
+                                        <button class="btn btn-danger ">✖︎</i></button>
                                     </form>
                                 {% endif %}
                             {% endif %}

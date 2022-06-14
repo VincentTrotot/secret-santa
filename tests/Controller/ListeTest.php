@@ -448,7 +448,7 @@ class ListeTest extends WebTestCase
         $this->assertSelectorTextContains('div', 'Vous n\'avez pas le droit de supprimer ce souhait.');
     }
 
-    public function testSupprimerSouhaitViaGET()
+    public function testGererSouhaitViaGET()
     {
         $this->databaseTool->loadFixtures([AppFixtures::class]);
 
@@ -460,6 +460,10 @@ class ListeTest extends WebTestCase
         $client->loginUser($utilisateur);
 
         $client->request('GET', '/listes/supprimer/1');
+        $this->assertResponseStatusCodeSame(Response::HTTP_METHOD_NOT_ALLOWED);
+        $client->request('GET', '/listes/acheter/1');
+        $this->assertResponseStatusCodeSame(Response::HTTP_METHOD_NOT_ALLOWED);
+        $client->request('GET', '/listes/rendre/1');
         $this->assertResponseStatusCodeSame(Response::HTTP_METHOD_NOT_ALLOWED);
     }
 
