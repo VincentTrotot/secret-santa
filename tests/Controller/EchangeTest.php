@@ -163,7 +163,7 @@ class EchangeTest extends WebTestCase
         $this->assertSelectorTextContains('div', 'Il n\'est pas possible d\'accepter cette demande. Elle a été automatiqement refusée.');
     }
 
-    public function testEchangeDemanveurMaisNomInterditPourReceveur()
+    public function testEchangeDemandeurMaisNomInterditPourReceveur()
     {
         $this->databaseTool->loadFixtures([AppFixtures::class]);
 
