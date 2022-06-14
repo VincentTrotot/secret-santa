@@ -100,6 +100,11 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         return (string) $this->pseudo;
     }
 
+    public function hasRole(string $role): bool
+    {
+        return in_array($role, $this->roles, true);
+    }
+
     /**
      * @see UserInterface
      */

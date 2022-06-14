@@ -78,6 +78,10 @@ class ListeController extends AbstractController
         if ($souhait->getAcheteur() != null && $souhait->getAcheteur() != $this->getUser()) {
             if ($souhait->getDestinataire() != $this->getUser()) {
                 $this->addFlash('info', 'Seul l\'acheteur peut modifier ce souhait.');
+                $referer = $request->headers->get('referer');
+                if ($referer !== null) {
+                    return $this->redirect($referer);
+                }
                 return $this->redirectToRoute('compte_index');
             }
         }
@@ -98,6 +102,10 @@ class ListeController extends AbstractController
                 $souhait->getDestinataire() !== $this->getUser()
             ) {
                 $this->addFlash('danger', 'Vous n\'avez pas le droit de modifier ce souhait.');
+                $referer = $request->request->all()['souhait']['referer'];
+                if ($referer !== "") {
+                    return $this->redirect($referer);
+                }
                 return $this->redirectToRoute('compte_index');
             }
 
@@ -109,7 +117,6 @@ class ListeController extends AbstractController
             if ($referer !== "") {
                 return $this->redirect($referer);
             }
-
             return $this->redirectToRoute('compte_index');
         }
 

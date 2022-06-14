@@ -9,26 +9,37 @@ use App\Entity\Utilisateur;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\Collections\ArrayCollection;
+use Faker\Generator;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class AppFixtures extends Fixture
 {
+    private $utilisateurs;
+    private $faker;
     private $passwordHasher;
 
     public function __construct(UserPasswordHasherInterface $passwordHasher)
     {
+        $this->faker = Factory::create('fr_FR');
+        $this->faker->seed(9025);
+        $this->utilisateurs = new ArrayCollection();
         $this->passwordHasher = $passwordHasher;
     }
+
     public function load(ObjectManager $manager): void
     {
-        $utilisateurs = new ArrayCollection();
-        $faker = Factory::create('fr_FR');
+        $this->createUtilisateurs($manager);
+        $this->createEchanges($manager);
+        $this->createSouhaits($manager);
+    }
 
+    private function createUtilisateurs(ObjectManager $manager)
+    {
         // 10 utilisateurs aléatoires  + 1 non aléatoire -> participants
         for ($i = 0; $i < 10; $i++) {
             $utilisateur = new Utilisateur();
-            $nom = $faker->lastName();
-            $prenom = $faker->firstName();
+            $nom = $this->faker->lastName();
+            $prenom = $this->faker->firstName();
             $utilisateur->setPseudo(
                 Utilisateur::remove_accents(mb_strtolower($prenom . '.' . $nom))
             );
@@ -39,8 +50,8 @@ class AppFixtures extends Fixture
                 'password'
             ));
             $utilisateur->setRoles(['ROLE_PARTICIPANT']);
-            $utilisateur->setDateDeNaissance($faker->dateTimeBetween('-45 years', '-20 years'));
-            $utilisateurs->add($utilisateur);
+            $utilisateur->setDateDeNaissance($this->faker->dateTimeBetween('-45 years', '-20 years'));
+            $this->utilisateurs->add($utilisateur);
         }
 
         $participant = new Utilisateur();
@@ -56,44 +67,34 @@ class AppFixtures extends Fixture
             'password'
         ));
         $participant->setRoles(['ROLE_PARTICIPANT']);
-        $participant->setDateDeNaissance($faker->dateTimeBetween('-45 years', '-20 years'));
-        $utilisateurs->add($participant);
+        $participant->setDateDeNaissance($this->faker->dateTimeBetween('-45 years', '-20 years'));
+        $this->utilisateurs->add($participant);
+
 
         // Ajout des interdits
-        $utilisateurs[1]->addUtilisateursInterdit($utilisateurs[2]);
-        $utilisateurs[3]->addUtilisateursInterdit($utilisateurs[4]);
-        $utilisateurs[5]->addUtilisateursInterdit($utilisateurs[6]);
-        $utilisateurs[7]->addUtilisateursInterdit($utilisateurs[8]);
-        $utilisateurs[9]->addUtilisateursInterdit($utilisateurs[10]);
+        $this->utilisateurs[1]->addUtilisateursInterdit($this->utilisateurs[2]);
+        $this->utilisateurs[3]->addUtilisateursInterdit($this->utilisateurs[4]);
+        $this->utilisateurs[5]->addUtilisateursInterdit($this->utilisateurs[6]);
+        $this->utilisateurs[7]->addUtilisateursInterdit($this->utilisateurs[8]);
+        $this->utilisateurs[9]->addUtilisateursInterdit($this->utilisateurs[10]);
 
         // Ajout du tirage
-        $utilisateurs[0]->setUtilisateurTire($utilisateurs[1]);
-        $utilisateurs[1]->setUtilisateurTire($utilisateurs[3]);
-        $utilisateurs[2]->setUtilisateurTire($utilisateurs[4]);
-        $utilisateurs[3]->setUtilisateurTire($utilisateurs[5]);
-        $utilisateurs[4]->setUtilisateurTire($utilisateurs[6]);
-        $utilisateurs[5]->setUtilisateurTire($utilisateurs[7]);
-        $utilisateurs[6]->setUtilisateurTire($utilisateurs[8]);
-        $utilisateurs[7]->setUtilisateurTire($utilisateurs[9]);
-        $utilisateurs[8]->setUtilisateurTire($utilisateurs[10]);
-        $utilisateurs[9]->setUtilisateurTire($utilisateurs[0]);
-        $utilisateurs[10]->setUtilisateurTire($utilisateurs[2]);
+        $this->utilisateurs[0]->setUtilisateurTire($this->utilisateurs[1]);
+        $this->utilisateurs[1]->setUtilisateurTire($this->utilisateurs[3]);
+        $this->utilisateurs[2]->setUtilisateurTire($this->utilisateurs[4]);
+        $this->utilisateurs[3]->setUtilisateurTire($this->utilisateurs[5]);
+        $this->utilisateurs[4]->setUtilisateurTire($this->utilisateurs[6]);
+        $this->utilisateurs[5]->setUtilisateurTire($this->utilisateurs[7]);
+        $this->utilisateurs[6]->setUtilisateurTire($this->utilisateurs[8]);
+        $this->utilisateurs[7]->setUtilisateurTire($this->utilisateurs[9]);
+        $this->utilisateurs[8]->setUtilisateurTire($this->utilisateurs[10]);
+        $this->utilisateurs[9]->setUtilisateurTire($this->utilisateurs[0]);
+        $this->utilisateurs[10]->setUtilisateurTire($this->utilisateurs[2]);
 
 
-        // Création d'un échange
-        $echange = new Echange();
-        $echange->setDate(new \DateTime());
-        $echange->setStatus(Echange::STATUS_EN_ATTENTE);
-        $echange->setDemandeur($utilisateurs[0]);
-        $echange->setReceveur($utilisateurs[5]);
-
-        $manager->persist($echange);
-
-        foreach ($utilisateurs as $utilisateur) {
+        foreach ($this->utilisateurs as $utilisateur) {
             $manager->persist($utilisateur);
         }
-
-
 
         // Création d'un utilisateur -> ROLE_USER
         $utilisateur = new Utilisateur();
@@ -109,10 +110,8 @@ class AppFixtures extends Fixture
             'password'
         ));
         $utilisateur->setRoles(['ROLE_USER']);
-        $utilisateur->setDateDeNaissance($faker->dateTimeBetween('-45 years', '-20 years'));
-
+        $utilisateur->setDateDeNaissance($this->faker->dateTimeBetween('-45 years', '-20 years'));
         $manager->persist($utilisateur);
-
 
         // Création d'un utilisateur -> ROLE_SPECTATEUR
         $utilisateur = new Utilisateur();
@@ -128,7 +127,7 @@ class AppFixtures extends Fixture
             'password'
         ));
         $utilisateur->setRoles(['ROLE_SPECTATEUR']);
-        $utilisateur->setDateDeNaissance($faker->dateTimeBetween('-45 years', '-20 years'));
+        $utilisateur->setDateDeNaissance($this->faker->dateTimeBetween('-45 years', '-20 years'));
         $manager->persist($utilisateur);
 
 
@@ -146,22 +145,73 @@ class AppFixtures extends Fixture
             'password'
         ));
         $utilisateur->setRoles(['ROLE_ADMIN']);
-        $utilisateur->setDateDeNaissance($faker->dateTimeBetween('-45 years', '-20 years'));
+        $utilisateur->setDateDeNaissance($this->faker->dateTimeBetween('-45 years', '-20 years'));
         $manager->persist($utilisateur);
 
+        $manager->persist($utilisateur);
+
+        $manager->flush();
+    }
+
+    private function createEchanges(ObjectManager $manager)
+    {
+        // Création d'un échange
+        $echange = new Echange();
+        $echange->setDate(new \DateTime());
+        $echange->setStatus(Echange::STATUS_EN_ATTENTE);
+        $echange->setDemandeur($this->utilisateurs[0]);
+        $echange->setReceveur($this->utilisateurs[5]);
+
+        $manager->persist($echange);
+        $manager->flush();
+    }
+
+    private function createSouhaits(ObjectManager $manager)
+    {
+        // Création de souhaits non achetés
+        for ($i = 0; $i < 10; $i++) {
+            $souhait = new Souhait();
+            $souhait->setCreatedAt(new \DateTimeImmutable());
+            $souhait->setEmetteur($this->utilisateurs[rand(0, 10)]);
+            $souhait->setDestinataire($this->utilisateurs[rand(0, 10)]);
+            $souhait->setNom($this->faker->word());
+            $souhait->setInformations($this->faker->sentence());
+            $souhait->setAchete(false);
+
+            $manager->persist($souhait);
+        }
 
 
-        // Création d'un souhait
+        // Création de souhaits achetés
+        for ($i = 0; $i < 5; $i++) {
+            $souhait = new Souhait();
+            $souhait->setCreatedAt(new \DateTimeImmutable());
+            $souhait->setEmetteur($this->utilisateurs[rand(0, 10)]);
+            $souhait->setDestinataire($this->utilisateurs[rand(0, 10)]);
+            $souhait->setNom($this->faker->word());
+            $souhait->setInformations($this->faker->sentence());
+            $souhait->setAchete(true);
+            do {
+                $done = false;
+                $acheteur = rand(0, 10);
+                if ($acheteur !== $souhait->getDestinataire()->getId()) {
+                    $souhait->setAcheteur($this->utilisateurs[$acheteur]);
+                    $done = true;
+                }
+            } while (!$done);
+
+            $manager->persist($souhait);
+        }
         $souhait = new Souhait();
         $souhait->setCreatedAt(new \DateTimeImmutable());
-        $souhait->setEmetteur($utilisateurs[0]);
-        $souhait->setDestinataire($utilisateurs[5]);
-        $souhait->setNom('Livre');
-        $souhait->setInformations('Un livre avec des pages');
-        $souhait->setAchete(false);
+        $souhait->setEmetteur($this->utilisateurs[rand(0, 10)]);
+        $souhait->setDestinataire($this->utilisateurs[rand(0, 10)]);
+        $souhait->setNom($this->faker->word());
+        $souhait->setInformations($this->faker->sentence());
+        $souhait->setAchete(true);
+        $souhait->setAcheteur($this->utilisateurs[0]);
 
         $manager->persist($souhait);
-
 
         $manager->flush();
     }

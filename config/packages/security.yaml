@@ -36,9 +36,9 @@ security:
         ROLE_PARTICIPANT: ROLE_SPECTATEUR
     access_control:
         # - { path: ^/admin, roles: ROLE_ADMIN }
-        - { path: ^/compte, roles: ROLE_USER }
-        - { path: ^/listes*, roles: ROLE_SPECTATEUR }
-        - { path: ^/tirage/*, roles: ROLE_SPECTATEUR }
+        - { path: ^/compte, roles: [ROLE_USER, ROLE_ADMIN] }
+        - { path: ^/listes*, roles: [ROLE_SPECTATEUR, ROLE_ADMIN] }
+        - { path: ^/tirage/*, roles: [ROLE_SPECTATEUR, ROLE_ADMIN] }
         - { path: ^/admin, roles: ROLE_ADMIN }
 
 when@test:
