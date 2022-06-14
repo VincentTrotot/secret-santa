@@ -21,68 +21,33 @@ class EchangeTest extends WebTestCase
         $this->databaseTool = self::getContainer()->get(DatabaseToolCollection::class)->get();
     }
 
-    public function testRootRoleAnonyme()
-    {
-        self::ensureKernelShutdown();
-        $client = self::createClient();
-
-        $crawler = $client->request('GET', '/echange');
-
-        $this->assertResponseRedirects('/se-connecter');
-    }
-
-    public function testRootRoleUser()
+    public function testRoutes()
     {
         $this->databaseTool->loadFixtures([AppFixtures::class]);
 
         self::ensureKernelShutdown();
         $client = self::createClient();
+
+        $crawler = $client->request('GET', '/echange');
+        $this->assertResponseRedirects('/se-connecter');
 
         $utilisateur = self::getContainer()->get(UtilisateurRepository::class)->findOneBy(['pseudo' => 'role.user']);
         $client->loginUser($utilisateur);
-
         $crawler = $client->request('GET', '/echange');
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
-    }
-
-    public function testRootRoleSpectateur()
-    {
-        $this->databaseTool->loadFixtures([AppFixtures::class]);
-
-        self::ensureKernelShutdown();
-        $client = self::createClient();
 
         $utilisateur = self::getContainer()->get(UtilisateurRepository::class)->findOneBy(['pseudo' => 'role.spectateur']);
         $client->loginUser($utilisateur);
-
         $crawler = $client->request('GET', '/echange');
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
-    }
-
-    public function testRootRoleParticipant()
-    {
-        $this->databaseTool->loadFixtures([AppFixtures::class]);
-
-        self::ensureKernelShutdown();
-        $client = self::createClient();
 
         $utilisateur = self::getContainer()->get(UtilisateurRepository::class)->findOneBy(['pseudo' => 'role.participant']);
         $client->loginUser($utilisateur);
-
         $crawler = $client->request('GET', '/echange');
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
-    }
-
-    public function testRootRoleAdmin()
-    {
-        $this->databaseTool->loadFixtures([AppFixtures::class]);
-
-        self::ensureKernelShutdown();
-        $client = self::createClient();
 
         $utilisateur = self::getContainer()->get(UtilisateurRepository::class)->findOneBy(['pseudo' => 'role.admin']);
         $client->loginUser($utilisateur);
-
         $crawler = $client->request('GET', '/echange');
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
     }

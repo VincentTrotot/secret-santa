@@ -6,12 +6,9 @@ use App\Entity\Utilisateur;
 use App\DataFixtures\AppFixtures;
 use App\Repository\SouhaitRepository;
 use App\Repository\UtilisateurRepository;
-use Exception;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Liip\TestFixturesBundle\Services\DatabaseToolCollection;
-use Symfony\Component\Routing\Exception\MethodNotAllowedException;
-use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 
 class ListeTest extends WebTestCase
 {
@@ -27,77 +24,39 @@ class ListeTest extends WebTestCase
         $this->databaseTool = self::getContainer()->get(DatabaseToolCollection::class)->get();
     }
 
-    public function testRouteListesRedirects()
-    {
-        self::ensureKernelShutdown();
-        $client = self::createClient();
-
-        $crawler = $client->request('GET', '/listes');
-
-        $this->assertResponseRedirects('/se-connecter');
-    }
-
-    public function testRouteListesRoleUser()
+    public function testRoutesListes()
     {
         $this->databaseTool->loadFixtures([AppFixtures::class]);
 
         self::ensureKernelShutdown();
         $client = self::createClient();
+
+        $crawler = $client->request('GET', '/listes');
+        $this->assertResponseRedirects('/se-connecter');
 
         $utilisateur = self::getContainer()->get(UtilisateurRepository::class)->findOneBy(['pseudo' => 'role.user']);
         $client->loginUser($utilisateur);
-
         $crawler = $client->request('GET', '/listes');
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
-    }
-
-    public function testRouteListesRoleSpectateur()
-    {
-        $this->databaseTool->loadFixtures([AppFixtures::class]);
-
-        self::ensureKernelShutdown();
-        $client = self::createClient();
 
         $utilisateur = self::getContainer()->get(UtilisateurRepository::class)->findOneBy(['pseudo' => 'role.spectateur']);
         $client->loginUser($utilisateur);
-
         $crawler = $client->request('GET', '/listes');
-
         $this->assertSelectorTextContains('a.btn.btn-outline-success', 'Ajouter un souhait');
-    }
-
-    public function testRouteListesRoleParticipant()
-    {
-        $this->databaseTool->loadFixtures([AppFixtures::class]);
-
-        self::ensureKernelShutdown();
-        $client = self::createClient();
 
         $utilisateur = self::getContainer()->get(UtilisateurRepository::class)->findOneBy(['pseudo' => 'role.participant']);
         $client->loginUser($utilisateur);
-
         $crawler = $client->request('GET', '/listes');
-
         $this->assertSelectorTextContains('a.btn.btn-outline-success', 'Ajouter un souhait');
-    }
-
-    public function testRouteListesRoleAdmin()
-    {
-        $this->databaseTool->loadFixtures([AppFixtures::class]);
-
-        self::ensureKernelShutdown();
-        $client = self::createClient();
 
         $utilisateur = self::getContainer()->get(UtilisateurRepository::class)->findOneBy(['pseudo' => 'role.admin']);
         $client->loginUser($utilisateur);
-
         $crawler = $client->request('GET', '/listes');
-
         $this->assertSelectorTextContains('a.btn.btn-outline-success', 'Ajouter un souhait');
     }
 
 
-    public function testRouteAjouterSouhaitRoleUser()
+    public function testRoutesAjouterSouhait()
     {
         $this->databaseTool->loadFixtures([AppFixtures::class]);
 
@@ -106,27 +65,16 @@ class ListeTest extends WebTestCase
 
         $utilisateur = self::getContainer()->get(UtilisateurRepository::class)->findOneBy(['pseudo' => 'role.user']);
         $client->loginUser($utilisateur);
-
         $crawler = $client->request('GET', '/listes/ajouter');
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
-    }
-
-    public function testRouteAjouterSouhaitRoleSpectateur()
-    {
-        $this->databaseTool->loadFixtures([AppFixtures::class]);
-
-        self::ensureKernelShutdown();
-        $client = self::createClient();
 
         $utilisateur = self::getContainer()->get(UtilisateurRepository::class)->findOneBy(['pseudo' => 'role.spectateur']);
         $client->loginUser($utilisateur);
-
         $crawler = $client->request('GET', '/listes/ajouter');
-
         $this->assertSelectorTextContains('h1', 'Ajouter un souhait');
     }
 
-    public function testRouteModifierSouhaitRoleUser()
+    public function testRoutesModifierSouhait()
     {
         $this->databaseTool->loadFixtures([AppFixtures::class]);
 
@@ -135,21 +83,11 @@ class ListeTest extends WebTestCase
 
         $utilisateur = self::getContainer()->get(UtilisateurRepository::class)->findOneBy(['pseudo' => 'role.user']);
         $client->loginUser($utilisateur);
-
         $crawler = $client->request('GET', '/listes/modifier/1');
         $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
-    }
-
-    public function testRouteModifierSouhaitRoleSpectateur()
-    {
-        $this->databaseTool->loadFixtures([AppFixtures::class]);
-
-        self::ensureKernelShutdown();
-        $client = self::createClient();
 
         $utilisateur = self::getContainer()->get(UtilisateurRepository::class)->findOneBy(['pseudo' => 'role.spectateur']);
         $client->loginUser($utilisateur);
-
         $crawler = $client->request('GET', '/listes/modifier/1');
         $this->assertSelectorTextContains('h1', 'Modifier un souhait');
     }

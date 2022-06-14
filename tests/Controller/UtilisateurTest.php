@@ -21,28 +21,19 @@ class UtilisateurTest extends WebTestCase
         $this->databaseTool = self::getContainer()->get(DatabaseToolCollection::class)->get();
     }
 
-    public function testRootCompteRedirect()
-    {
-        self::ensureKernelShutdown();
-        $client = self::createClient();
-
-        $crawler = $client->request('GET', '/compte');
-
-        $this->assertResponseRedirects('/se-connecter');
-    }
-
-    public function testRootCompteForUsers()
+    public function testRoutes()
     {
         $this->databaseTool->loadFixtures([AppFixtures::class]);
 
         self::ensureKernelShutdown();
         $client = self::createClient();
 
+        $crawler = $client->request('GET', '/compte');
+        $this->assertResponseRedirects('/se-connecter');
+
         $utilisateur = self::getContainer()->get(UtilisateurRepository::class)->findOneBy(['pseudo' => 'role.spectateur']);
         $client->loginUser($utilisateur);
-
         $crawler = $client->request('GET', '/compte');
-
         $this->assertSelectorTextContains('h1', 'role.spectateur');
     }
 }
