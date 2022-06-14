@@ -21,7 +21,7 @@ class UtilisateurTest extends WebTestCase
         $this->databaseTool = self::getContainer()->get(DatabaseToolCollection::class)->get();
     }
 
-    public function testRootRedirect()
+    public function testRootCompteRedirect()
     {
         self::ensureKernelShutdown();
         $client = self::createClient();
@@ -31,43 +31,18 @@ class UtilisateurTest extends WebTestCase
         $this->assertResponseRedirects('/se-connecter');
     }
 
-    public function testRootForUsers()
+    public function testRootCompteForUsers()
     {
         $this->databaseTool->loadFixtures([AppFixtures::class]);
 
         self::ensureKernelShutdown();
         $client = self::createClient();
 
-        $utilisateur = self::getContainer()->get(UtilisateurRepository::class)->findOneBy(['pseudo' => 'jean.dupont']);
+        $utilisateur = self::getContainer()->get(UtilisateurRepository::class)->findOneBy(['pseudo' => 'role.spectateur']);
         $client->loginUser($utilisateur);
 
         $crawler = $client->request('GET', '/compte');
 
-        $this->assertSelectorTextContains('h1', 'jean.dupont');
-    }
-
-    public function testListesRedirects()
-    {
-        self::ensureKernelShutdown();
-        $client = self::createClient();
-
-        $crawler = $client->request('GET', '/listes');
-
-        $this->assertResponseRedirects('/se-connecter');
-    }
-
-    public function testListesForUtilisateurs()
-    {
-        $this->databaseTool->loadFixtures([AppFixtures::class]);
-
-        self::ensureKernelShutdown();
-        $client = self::createClient();
-
-        $utilisateur = self::getContainer()->get(UtilisateurRepository::class)->findOneBy(['pseudo' => 'jean.dupont']);
-        $client->loginUser($utilisateur);
-
-        $crawler = $client->request('GET', '/listes');
-
-        $this->assertSelectorTextContains('a.btn.btn-outline-success', 'Ajouter un souhait');
+        $this->assertSelectorTextContains('h1', 'role.spectateur');
     }
 }

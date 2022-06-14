@@ -57,12 +57,12 @@ class SecurityTest extends WebTestCase
 
         $crawler = $client->request('GET', '/se-connecter');
         $form = $crawler->selectButton('Se connecter')->form([
-            'pseudo' => 'jean.dupont',
+            'pseudo' => 'role.spectateur',
             'password' => 'password',
         ]);
         $client->submit($form);
         $this->assertResponseRedirects('/compte');
         $client->followRedirect();
-        $this->assertSelectorExists('h1', 'jean.dupont');
+        $this->assertSelectorExists('h1', 'role.spectateur');
     }
 }
