@@ -15,24 +15,4 @@ class UtilisateurController extends AbstractController
     {
         return $this->render('utilisateur/index.html.twig');
     }
-
-    #[Route('/tirage', name: 'compte_tirage')]
-    public function tirage(UtilisateurRepository $utilisateurRepository): Response
-    {
-        $utilisateurs = $utilisateurRepository->findAllParticipants();
-        usort($utilisateurs, function ($a, $b) {
-            if ($a->getUtilisateurTire() === null) {
-                return 1;
-            }
-            if ($b->getUtilisateurTire() === null) {
-                return -1;
-            }
-            $dateA = $a->getUtilisateurTire()->getDateDeNaissance();
-            $dateB = $b->getUtilisateurTire()->getDateDeNaissance();
-            return $dateA < $dateB ? -1 : 1;
-        });
-        return $this->render('utilisateur/tirage.html.twig', [
-            'utilisateurs' => $utilisateurs,
-        ]);
-    }
 }
