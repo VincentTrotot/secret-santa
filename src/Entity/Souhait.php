@@ -28,6 +28,7 @@ class Souhait
     private $emetteur;
 
     #[ORM\ManyToOne(targetEntity: Utilisateur::class)]
+    #[ORM\JoinColumn(onDelete: 'SET NULL')]
     private $acheteur;
 
     #[ORM\Column(type: 'text', nullable: true)]

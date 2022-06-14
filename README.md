@@ -20,7 +20,7 @@ Un projet symfony qui permet de gérer un secret santa.
 -   [x] Initialiser le projet symony
 -   [x] Paramétrer la connection à la base de données
 -   [x] Créer les entités
--   [ ] Faire les tests unitaires
+-   [x] Faire les tests unitaires
 -   [x] Faire la fonction de tirage au sort
 -   [x] Faire la gestion de l'inscription à l'application
 -   [x] Faire la gestion de la connection à l'application
