@@ -3,106 +3,51 @@
 namespace App\Tests\Controller;
 
 use App\Entity\Utilisateur;
+use App\Tests\CustomWebTestCase;
 use App\DataFixtures\AppFixtures;
 use App\Repository\SouhaitRepository;
 use App\Repository\UtilisateurRepository;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Liip\TestFixturesBundle\Services\DatabaseToolCollection;
 
-class ListeTest extends WebTestCase
+class ListeTest extends CustomWebTestCase
 {
-
-    /** @var AbstractDatabaseTool */
-    protected $databaseTool;
-
-    public function setUp(): void
-    {
-        parent::setUp();
-        self::bootKernel();
-
-        $this->databaseTool = self::getContainer()->get(DatabaseToolCollection::class)->get();
-    }
 
     public function testRoutesListes()
     {
         $this->databaseTool->loadFixtures([AppFixtures::class]);
+        $this->setClient();
 
-        self::ensureKernelShutdown();
-        $client = self::createClient();
-
-        $crawler = $client->request('GET', '/listes');
-        $this->assertResponseRedirects('/se-connecter');
-
-        $utilisateur = self::getContainer()->get(UtilisateurRepository::class)->findOneBy(['pseudo' => 'role.user']);
-        $client->loginUser($utilisateur);
-        $crawler = $client->request('GET', '/listes');
-        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
-
-        $utilisateur = self::getContainer()->get(UtilisateurRepository::class)->findOneBy(['pseudo' => 'role.spectateur']);
-        $client->loginUser($utilisateur);
-        $crawler = $client->request('GET', '/listes');
-        $this->assertSelectorTextContains('a.btn.btn-outline-success', 'Ajouter un souhait');
-
-        $utilisateur = self::getContainer()->get(UtilisateurRepository::class)->findOneBy(['pseudo' => 'role.participant']);
-        $client->loginUser($utilisateur);
-        $crawler = $client->request('GET', '/listes');
-        $this->assertSelectorTextContains('a.btn.btn-outline-success', 'Ajouter un souhait');
-
-        $utilisateur = self::getContainer()->get(UtilisateurRepository::class)->findOneBy(['pseudo' => 'role.admin']);
-        $client->loginUser($utilisateur);
-        $crawler = $client->request('GET', '/listes');
-        $this->assertSelectorTextContains('a.btn.btn-outline-success', 'Ajouter un souhait');
+        $this->assertRoute('/listes', ['user']);
+        $this->assertRoute('/listes', ['spectateur', 'participant', 'admin'], Response::HTTP_OK, false);
     }
 
 
     public function testRoutesAjouterSouhait()
     {
         $this->databaseTool->loadFixtures([AppFixtures::class]);
+        $this->setClient();
 
-        self::ensureKernelShutdown();
-        $client = self::createClient();
-
-        $utilisateur = self::getContainer()->get(UtilisateurRepository::class)->findOneBy(['pseudo' => 'role.user']);
-        $client->loginUser($utilisateur);
-        $crawler = $client->request('GET', '/listes/ajouter');
-        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
-
-        $utilisateur = self::getContainer()->get(UtilisateurRepository::class)->findOneBy(['pseudo' => 'role.spectateur']);
-        $client->loginUser($utilisateur);
-        $crawler = $client->request('GET', '/listes/ajouter');
-        $this->assertSelectorTextContains('h1', 'Ajouter un souhait');
+        $this->assertRoute('/listes/ajouter', ['user']);
+        $this->assertRoute('/listes/ajouter', ['spectateur', 'participant', 'admin'], Response::HTTP_OK, false);
     }
 
     public function testRoutesModifierSouhait()
     {
         $this->databaseTool->loadFixtures([AppFixtures::class]);
+        $this->setClient();
 
-        self::ensureKernelShutdown();
-        $client = self::createClient();
-
-        $utilisateur = self::getContainer()->get(UtilisateurRepository::class)->findOneBy(['pseudo' => 'role.user']);
-        $client->loginUser($utilisateur);
-        $crawler = $client->request('GET', '/listes/modifier/1');
-        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
-
-        $utilisateur = self::getContainer()->get(UtilisateurRepository::class)->findOneBy(['pseudo' => 'role.spectateur']);
-        $client->loginUser($utilisateur);
-        $crawler = $client->request('GET', '/listes/modifier/1');
-        $this->assertSelectorTextContains('h1', 'Modifier un souhait');
+        $this->assertRoute('/listes/modifier/1', ['user']);
+        $this->assertRoute('/listes/modifier/1', ['spectateur', 'participant', 'admin'], Response::HTTP_OK, false);
     }
 
     public function testAjoutSouhait()
     {
         $this->databaseTool->loadFixtures([AppFixtures::class]);
+        $this->setClient();
 
-        self::ensureKernelShutdown();
-        $client = self::createClient();
+        $this->connectUtilisateur('role.spectateur');
 
-        $utilisateur = self::getContainer()->get(UtilisateurRepository::class)->findOneBy(['pseudo' => 'role.spectateur']);
-        $client->loginUser($utilisateur);
-
-        $crawler = $client->request('GET', '/listes/ajouter');
+        $crawler = $this->client->request('GET', '/listes/ajouter');
 
         $form = $crawler->selectButton('Enregistrer')->form([
             'souhait[nom]' => 'Unit',
@@ -111,42 +56,38 @@ class ListeTest extends WebTestCase
             'souhait[destinataire]' => '1',
         ]);
 
-        $client->submit($form);
+        $this->client->submit($form);
 
         $this->assertResponseRedirects('');
-        $client->followRedirect();
+        $this->client->followRedirect();
         $this->assertSelectorTextContains('div', 'Le souhait a bien été ajouté.');
     }
 
     public function testModifierSouhaitInexistant()
     {
         $this->databaseTool->loadFixtures([AppFixtures::class]);
-
-        self::ensureKernelShutdown();
-        $client = self::createClient();
+        $this->setClient();
 
         $utilisateur = self::getContainer()->get(UtilisateurRepository::class)->find(1);
-        $client->loginUser($utilisateur);
+        $this->client->loginUser($utilisateur);
 
-        $crawler = $client->request('GET', '/listes/modifier/150');
+        $crawler = $this->client->request('GET', '/listes/modifier/150');
 
         $this->assertResponseRedirects('/compte');
-        $client->followRedirect();
+        $this->client->followRedirect();
         $this->assertSelectorTextContains('div', 'Ce souhait n\'existe pas.');
     }
 
     public function testModifierSouhaitParEmetteur()
     {
         $this->databaseTool->loadFixtures([AppFixtures::class]);
-
-        self::ensureKernelShutdown();
-        $client = self::createClient();
+        $this->setClient();
 
         $souhait = self::getContainer()->get(SouhaitRepository::class)->find(1);
         $utilisateur = self::getContainer()->get(UtilisateurRepository::class)->find($souhait->getEmetteur()->getId());
-        $client->loginUser($utilisateur);
+        $this->client->loginUser($utilisateur);
 
-        $crawler = $client->request('GET', '/listes/modifier/1');
+        $crawler = $this->client->request('GET', '/listes/modifier/1');
 
         $form = $crawler->selectButton('Enregistrer')->form([
             'souhait[nom]' => 'Unit',
@@ -155,25 +96,23 @@ class ListeTest extends WebTestCase
             'souhait[destinataire]' => $souhait->getDestinataire()->getId(),
         ]);
 
-        $client->submit($form);
+        $this->client->submit($form);
 
         $this->assertResponseRedirects('');
-        $client->followRedirect();
+        $this->client->followRedirect();
         $this->assertSelectorTextContains('div', 'Le souhait a bien été modifié.');
     }
 
     public function testModifierSouhaitParDestinataire()
     {
         $this->databaseTool->loadFixtures([AppFixtures::class]);
-
-        self::ensureKernelShutdown();
-        $client = self::createClient();
+        $this->setClient();
 
         $souhait = self::getContainer()->get(SouhaitRepository::class)->find(1);
         $utilisateur = self::getContainer()->get(UtilisateurRepository::class)->find($souhait->getDestinataire()->getId());
-        $client->loginUser($utilisateur);
+        $this->client->loginUser($utilisateur);
 
-        $crawler = $client->request('GET', '/listes/modifier/1');
+        $crawler = $this->client->request('GET', '/listes/modifier/1');
 
         $form = $crawler->selectButton('Enregistrer')->form([
             'souhait[nom]' => 'Unit',
@@ -182,19 +121,17 @@ class ListeTest extends WebTestCase
             'souhait[destinataire]' => $souhait->getDestinataire()->getId(),
         ]);
 
-        $client->submit($form);
+        $this->client->submit($form);
 
         $this->assertResponseRedirects('');
-        $client->followRedirect();
+        $this->client->followRedirect();
         $this->assertSelectorTextContains('div', 'Le souhait a bien été modifié.');
     }
 
     public function testModifierSouhaitParNonConcerne()
     {
         $this->databaseTool->loadFixtures([AppFixtures::class]);
-
-        self::ensureKernelShutdown();
-        $client = self::createClient();
+        $this->setClient();
 
         $souhait = self::getContainer()->get(SouhaitRepository::class)->find(1);
 
@@ -210,9 +147,9 @@ class ListeTest extends WebTestCase
         }
 
         $utilisateur = self::getContainer()->get(UtilisateurRepository::class)->find($id);
-        $client->loginUser($utilisateur);
+        $this->client->loginUser($utilisateur);
 
-        $crawler = $client->request('GET', '/listes/modifier/1');
+        $crawler = $this->client->request('GET', '/listes/modifier/1');
 
         $form = $crawler->selectButton('Enregistrer')->form([
             'souhait[nom]' => 'Unit',
@@ -221,25 +158,23 @@ class ListeTest extends WebTestCase
             'souhait[destinataire]' => $souhait->getDestinataire()->getId(),
         ]);
 
-        $client->submit($form);
+        $this->client->submit($form);
 
         $this->assertResponseRedirects('');
-        $client->followRedirect();
+        $this->client->followRedirect();
         $this->assertSelectorTextContains('div', 'Vous n\'avez pas le droit de modifier ce souhait.');
     }
 
     public function testModifierSouhaitAcheteParDestinataire()
     {
         $this->databaseTool->loadFixtures([AppFixtures::class]);
-
-        self::ensureKernelShutdown();
-        $client = self::createClient();
+        $this->setClient();
 
         $souhait = self::getContainer()->get(SouhaitRepository::class)->find(15);
         $utilisateur = self::getContainer()->get(UtilisateurRepository::class)->find($souhait->getDestinataire()->getId());
-        $client->loginUser($utilisateur);
+        $this->client->loginUser($utilisateur);
 
-        $crawler = $client->request('GET', '/listes/modifier/15');
+        $crawler = $this->client->request('GET', '/listes/modifier/15');
 
         $form = $crawler->selectButton('Enregistrer')->form([
             'souhait[nom]' => 'Unit',
@@ -248,25 +183,23 @@ class ListeTest extends WebTestCase
             'souhait[destinataire]' => $souhait->getDestinataire()->getId(),
         ]);
 
-        $client->submit($form);
+        $this->client->submit($form);
 
         $this->assertResponseRedirects('');
-        $client->followRedirect();
+        $this->client->followRedirect();
         $this->assertSelectorTextContains('div', 'Le souhait a bien été modifié.');
     }
 
     public function testModifierSouhaitAcheteParAcheteur()
     {
         $this->databaseTool->loadFixtures([AppFixtures::class]);
-
-        self::ensureKernelShutdown();
-        $client = self::createClient();
+        $this->setClient();
 
         $souhait = self::getContainer()->get(SouhaitRepository::class)->find(15);
         $utilisateur = self::getContainer()->get(UtilisateurRepository::class)->find($souhait->getAcheteur()->getId());
-        $client->loginUser($utilisateur);
+        $this->client->loginUser($utilisateur);
 
-        $crawler = $client->request('GET', '/listes/modifier/15');
+        $crawler = $this->client->request('GET', '/listes/modifier/15');
 
         $form = $crawler->selectButton('Enregistrer')->form([
             'souhait[nom]' => 'Unit',
@@ -275,19 +208,17 @@ class ListeTest extends WebTestCase
             'souhait[destinataire]' => $souhait->getDestinataire()->getId(),
         ]);
 
-        $client->submit($form);
+        $this->client->submit($form);
 
         $this->assertResponseRedirects('');
-        $client->followRedirect();
+        $this->client->followRedirect();
         $this->assertSelectorTextContains('div', 'Le souhait a bien été modifié.');
     }
 
     public function testModifierSouhaitAcheteParNonConcerne()
     {
         $this->databaseTool->loadFixtures([AppFixtures::class]);
-
-        self::ensureKernelShutdown();
-        $client = self::createClient();
+        $this->setClient();
 
         $souhait = self::getContainer()->get(SouhaitRepository::class)->find(15);
 
@@ -300,66 +231,60 @@ class ListeTest extends WebTestCase
                 }
             }
         }
-        $client->loginUser($utilisateur);
+        $this->client->loginUser($utilisateur);
 
-        $crawler = $client->request('GET', '/listes/modifier/15');
+        $crawler = $this->client->request('GET', '/listes/modifier/15');
 
 
         $this->assertResponseRedirects('');
-        $client->followRedirect();
+        $this->client->followRedirect();
         $this->assertSelectorTextContains('div', 'Seul l\'acheteur peut modifier ce souhait.');
     }
 
     public function testSupprimerSouhaitParEmetteur()
     {
         $this->databaseTool->loadFixtures([AppFixtures::class]);
-
-        self::ensureKernelShutdown();
-        $client = self::createClient();
+        $this->setClient();
 
         $souhait = self::getContainer()->get(SouhaitRepository::class)->find(1);
         $utilisateur = self::getContainer()->get(UtilisateurRepository::class)->find($souhait->getEmetteur()->getId());
-        $client->loginUser($utilisateur);
+        $this->client->loginUser($utilisateur);
 
-        $crawler = $client->request('GET', '/listes/modifier/1');
+        $crawler = $this->client->request('GET', '/listes/modifier/1');
 
         $form = $crawler->selectButton('Supprimer')->form();
 
-        $client->submit($form);
+        $this->client->submit($form);
 
         $this->assertResponseRedirects('');
-        $client->followRedirect();
+        $this->client->followRedirect();
         $this->assertSelectorTextContains('div', 'Votre souhait a bien été supprimé.');
     }
 
     public function testSupprimerSouhaitParDestinataire()
     {
         $this->databaseTool->loadFixtures([AppFixtures::class]);
-
-        self::ensureKernelShutdown();
-        $client = self::createClient();
+        $this->setClient();
 
         $souhait = self::getContainer()->get(SouhaitRepository::class)->find(1);
         $utilisateur = self::getContainer()->get(UtilisateurRepository::class)->find($souhait->getDestinataire()->getId());
-        $client->loginUser($utilisateur);
+        $this->client->loginUser($utilisateur);
 
-        $crawler = $client->request('GET', '/listes/modifier/1');
+        $crawler = $this->client->request('GET', '/listes/modifier/1');
 
         $form = $crawler->selectButton('Supprimer')->form();
 
-        $client->submit($form);
+        $this->client->submit($form);
 
         $this->assertResponseRedirects('');
-        $client->followRedirect();
+        $this->client->followRedirect();
         $this->assertSelectorTextContains('div', 'Votre souhait a bien été supprimé.');
     }
 
     public function testSupprimerSouhaitParNonConcerne()
     {
         $this->databaseTool->loadFixtures([AppFixtures::class]);
-
-        self::ensureKernelShutdown();
-        $client = self::createClient();
+        $this->setClient();
 
         $souhait = self::getContainer()->get(SouhaitRepository::class)->find(1);
         $id = 1;
@@ -373,77 +298,71 @@ class ListeTest extends WebTestCase
             }
         }
         $utilisateur = self::getContainer()->get(UtilisateurRepository::class)->find($id);
-        $client->loginUser($utilisateur);
+        $this->client->loginUser($utilisateur);
 
-        $crawler = $client->request('GET', '/listes/modifier/1');
+        $crawler = $this->client->request('GET', '/listes/modifier/1');
 
         $form = $crawler->selectButton('Supprimer')->form();
 
-        $client->submit($form);
+        $this->client->submit($form);
 
         $this->assertResponseRedirects('');
-        $client->followRedirect();
+        $this->client->followRedirect();
         $this->assertSelectorTextContains('div', 'Vous n\'avez pas le droit de supprimer ce souhait.');
     }
 
     public function testGererSouhaitViaGET()
     {
         $this->databaseTool->loadFixtures([AppFixtures::class]);
-
-        self::ensureKernelShutdown();
-        $client = self::createClient();
+        $this->setClient();
 
         $souhait = self::getContainer()->get(SouhaitRepository::class)->find(1);
         $utilisateur = self::getContainer()->get(UtilisateurRepository::class)->find($souhait->getEmetteur()->getId());
-        $client->loginUser($utilisateur);
+        $this->client->loginUser($utilisateur);
 
-        $client->request('GET', '/listes/supprimer/1');
+        $this->client->request('GET', '/listes/supprimer/1');
         $this->assertResponseStatusCodeSame(Response::HTTP_METHOD_NOT_ALLOWED);
-        $client->request('GET', '/listes/acheter/1');
+        $this->client->request('GET', '/listes/acheter/1');
         $this->assertResponseStatusCodeSame(Response::HTTP_METHOD_NOT_ALLOWED);
-        $client->request('GET', '/listes/rendre/1');
+        $this->client->request('GET', '/listes/rendre/1');
         $this->assertResponseStatusCodeSame(Response::HTTP_METHOD_NOT_ALLOWED);
     }
 
     public function testMarquerSouhaitCommeAchete()
     {
         $this->databaseTool->loadFixtures([AppFixtures::class]);
-
-        self::ensureKernelShutdown();
-        $client = self::createClient();
+        $this->setClient();
 
         $utilisateur = self::getContainer()->get(UtilisateurRepository::class)->find(1);
-        $client->loginUser($utilisateur);
+        $this->client->loginUser($utilisateur);
 
-        $crawler = $client->request('GET', '/listes');
+        $crawler = $this->client->request('GET', '/listes');
 
         $form = $crawler->selectButton('Marquer comme acheté')->form();
 
-        $client->submit($form);
+        $this->client->submit($form);
 
         $this->assertResponseRedirects('');
-        $client->followRedirect();
+        $this->client->followRedirect();
         $this->assertSelectorTextContains('div', 'Votre souhait a bien été marqué comme acheté.');
     }
 
     public function testRetirerMarqueAchatSouhait()
     {
         $this->databaseTool->loadFixtures([AppFixtures::class]);
-
-        self::ensureKernelShutdown();
-        $client = self::createClient();
+        $this->setClient();
 
         $utilisateur = self::getContainer()->get(UtilisateurRepository::class)->find(1);
-        $client->loginUser($utilisateur);
+        $this->client->loginUser($utilisateur);
 
-        $crawler = $client->request('GET', '/listes');
+        $crawler = $this->client->request('GET', '/listes');
 
         $form = $crawler->selectButton('Enlever la marque d\'achat')->form();
 
-        $client->submit($form);
+        $this->client->submit($form);
 
         $this->assertResponseRedirects('');
-        $client->followRedirect();
+        $this->client->followRedirect();
         $this->assertSelectorTextContains('div', 'La marque d\'achat a bien été enlevée.');
     }
 }

@@ -2,38 +2,19 @@
 
 namespace App\Tests\Controller;
 
+use App\Tests\CustomWebTestCase;
 use App\DataFixtures\AppFixtures;
-use App\Repository\UtilisateurRepository;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Liip\TestFixturesBundle\Services\DatabaseToolCollection;
 
-class UtilisateurTest extends WebTestCase
+class UtilisateurTest extends CustomWebTestCase
 {
-    /** @var AbstractDatabaseTool */
-    protected $databaseTool;
-
-    public function setUp(): void
-    {
-        parent::setUp();
-        self::bootKernel();
-
-        $this->databaseTool = self::getContainer()->get(DatabaseToolCollection::class)->get();
-    }
 
     public function testRoutes()
     {
         $this->databaseTool->loadFixtures([AppFixtures::class]);
+        $this->setClient();
 
-        self::ensureKernelShutdown();
-        $client = self::createClient();
-
-        $crawler = $client->request('GET', '/compte');
-        $this->assertResponseRedirects('/se-connecter');
-
-        $utilisateur = self::getContainer()->get(UtilisateurRepository::class)->findOneBy(['pseudo' => 'role.spectateur']);
-        $client->loginUser($utilisateur);
-        $crawler = $client->request('GET', '/compte');
-        $this->assertSelectorTextContains('h1', 'role.spectateur');
+        $this->assertRoute('/compte', []);
+        $this->assertRoute('/compte', ['user', 'spectateur', 'participant', 'admin'], Response::HTTP_OK, false);
     }
 }

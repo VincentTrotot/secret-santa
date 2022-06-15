@@ -2,51 +2,19 @@
 
 namespace App\Tests\Controller;
 
+use App\Tests\CustomWebTestCase;
 use App\DataFixtures\AppFixtures;
-use App\Repository\UtilisateurRepository;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Liip\TestFixturesBundle\Services\DatabaseToolCollection;
 
-class TirageTest extends WebTestCase
+class TirageTest extends CustomWebTestCase
 {
-    /** @var AbstractDatabaseTool */
-    protected $databaseTool;
-
-    public function setUp(): void
-    {
-        parent::setUp();
-        self::bootKernel();
-
-        $this->databaseTool = self::getContainer()->get(DatabaseToolCollection::class)->get();
-    }
 
     public function testTirageRoutes()
     {
-        self::ensureKernelShutdown();
-        $client = self::createClient();
+        $this->databaseTool->loadFixtures([AppFixtures::class]);
+        $this->setClient();
 
-        $crawler = $client->request('GET', '/tirage');
-        $this->assertResponseRedirects('/se-connecter');
-
-        $utilisateur = self::getContainer()->get(UtilisateurRepository::class)->findOneBy(['pseudo' => 'role.user']);
-        $client->loginUser($utilisateur);
-        $crawler = $client->request('GET', '/tirage');
-        $this->assertResponseStatusCodeSame(Response::HTTP_FORBIDDEN);
-
-        $utilisateur = self::getContainer()->get(UtilisateurRepository::class)->findOneBy(['pseudo' => 'role.spectateur']);
-        $client->loginUser($utilisateur);
-        $crawler = $client->request('GET', '/tirage');
-        $this->assertResponseStatusCodeSame(Response::HTTP_OK);
-
-        $utilisateur = self::getContainer()->get(UtilisateurRepository::class)->findOneBy(['pseudo' => 'role.participant']);
-        $client->loginUser($utilisateur);
-        $crawler = $client->request('GET', '/tirage');
-        $this->assertResponseStatusCodeSame(Response::HTTP_OK);
-
-        $utilisateur = self::getContainer()->get(UtilisateurRepository::class)->findOneBy(['pseudo' => 'role.admin']);
-        $client->loginUser($utilisateur);
-        $crawler = $client->request('GET', '/tirage');
-        $this->assertResponseStatusCodeSame(Response::HTTP_OK);
+        $this->assertRoute('/tirage', ['user']);
+        $this->assertRoute('/tirage', ['spectateur', 'participant', 'admin'], Response::HTTP_OK, false);
     }
 }

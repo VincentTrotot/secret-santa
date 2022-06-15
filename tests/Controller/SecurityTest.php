@@ -2,32 +2,19 @@
 
 namespace App\Test\Controller;
 
+use App\Tests\CustomWebTestCase;
 use App\DataFixtures\AppFixtures;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
-use Liip\TestFixturesBundle\Services\DatabaseToolCollection;
 
-class SecurityTest extends WebTestCase
+class SecurityTest extends CustomWebTestCase
 {
-    /** @var AbstractDatabaseTool */
-    protected $databaseTool;
-
-    public function setUp(): void
-    {
-        parent::setUp();
-        self::bootKernel();
-
-        $this->databaseTool = self::getContainer()->get(DatabaseToolCollection::class)->get();
-    }
 
     public function testLoginPage()
     {
         $this->databaseTool->loadFixtures([AppFixtures::class]);
+        $this->setClient();
 
-        self::ensureKernelShutdown();
-        $client = self::createClient();
-
-        $crawler = $client->request('GET', '/se-connecter');
+        $crawler = $this->client->request('GET', '/se-connecter');
 
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
         $this->assertSelectorTextContains('h1', 'Se connecter');
@@ -35,34 +22,32 @@ class SecurityTest extends WebTestCase
 
     public function testLoginWithBadCredentials()
     {
-        self::ensureKernelShutdown();
-        $client = self::createClient();
+        $this->setClient();
 
-        $crawler = $client->request('GET', '/se-connecter');
+        $crawler = $this->client->request('GET', '/se-connecter');
         $form = $crawler->selectButton('Se connecter')->form([
             'pseudo' => 'toto',
             'password' => 'toto',
         ]);
         $this->assertSelectorNotExists('div.alert-danger');
-        $client->submit($form);
+        $this->client->submit($form);
         $this->assertResponseRedirects('/se-connecter');
-        $client->followRedirect();
+        $this->client->followRedirect();
         $this->assertSelectorExists('div.alert-danger');
     }
 
     public function testSuccessfullLogin()
     {
-        self::ensureKernelShutdown();
-        $client = static::createClient();
+        $this->setClient();
 
-        $crawler = $client->request('GET', '/se-connecter');
+        $crawler = $this->client->request('GET', '/se-connecter');
         $form = $crawler->selectButton('Se connecter')->form([
             'pseudo' => 'role.spectateur',
             'password' => 'password',
         ]);
-        $client->submit($form);
+        $this->client->submit($form);
         $this->assertResponseRedirects('/compte');
-        $client->followRedirect();
+        $this->client->followRedirect();
         $this->assertSelectorExists('h1', 'role.spectateur');
     }
 }
