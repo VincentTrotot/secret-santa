@@ -17,11 +17,11 @@ class Echange
     private $date;
 
     #[ORM\ManyToOne(targetEntity: Utilisateur::class, inversedBy: 'demandesFaites')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private $demandeur;
 
     #[ORM\ManyToOne(targetEntity: Utilisateur::class, inversedBy: 'demandesRecues')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private $receveur;
 
     #[ORM\Column(type: 'string', length: 255)]
