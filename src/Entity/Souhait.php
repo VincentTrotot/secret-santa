@@ -20,15 +20,15 @@ class Souhait
     private $achete;
 
     #[ORM\ManyToOne(targetEntity: Utilisateur::class, inversedBy: 'souhaits')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     private $destinataire;
 
     #[ORM\ManyToOne(targetEntity: Utilisateur::class)]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
     private $emetteur;
 
     #[ORM\ManyToOne(targetEntity: Utilisateur::class)]
-    #[ORM\JoinColumn(onDelete: 'SET NULL')]
+    #[ORM\JoinColumn(onDelete: 'SET NULL', nullable: true)]
     private $acheteur;
 
     #[ORM\Column(type: 'text', nullable: true)]
