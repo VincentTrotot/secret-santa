@@ -307,11 +307,9 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     {
         $id_possible = [];
         foreach ($utilisateurs as $utilisateur) {
-            $id_possible[] = $utilisateur->getId();
-        }
-
-        if (in_array($this->getId(), $id_possible)) {
-            array_splice($id_possible, array_search($this->getId(), $id_possible), 1);
+            if ($this != $utilisateur) {
+                $id_possible[] = $utilisateur->getId();
+            }
         }
 
         foreach ($this->getUtilisateursInterdits() as $interdit) {

@@ -52,6 +52,19 @@ class AdminController extends AbstractController
         $this->resetTirage($doctrine, $utilisateurRepository, $echangeRepository);
 
         $utilisateurs = new ArrayCollection($utilisateurRepository->findAllParticipants());
+
+        $possible = true;
+        foreach ($utilisateurs as $utilisateur) {
+            if (!$utilisateur->isTiragePossible($utilisateurs)) {
+                $possible = false;
+                break;
+            }
+        }
+
+        if (!$possible) {
+            $this->addFlash('danger', 'Il n\'y a pas assez de participants pour faire un tirage');
+            return $this->redirectToRoute('tirage_check');
+        }
         do {
             $utilisateurs_copie = clone $utilisateurs;
 
