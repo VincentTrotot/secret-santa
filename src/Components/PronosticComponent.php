@@ -30,19 +30,14 @@ class PronosticComponent
         if ($pronostic[$this->id] != $utilisateur->getUtilisateurTire()->getId() && $pronostic[$this->id] != 0) {
             $message .= 'Vous n\'avez pas tiré ';
             $message .= $this->utilisateurRepository->find($pronostic[$this->id])->getPrenom();
-            $message .= '<br>';
+            $message .= '.<br>';
         }
 
-        $dups = [];
-        foreach (array_count_values($pronostic) as $val => $c) {
-            if ($c > 1 && $val != 0) {
-                $dups[] =  $this->utilisateurRepository->find($val);
-            }
-        }
+        $dups = $this->findDups();
 
         if (count($dups) > 0) {
             foreach ($dups as $dup) {
-                $message .=   $this->utilisateurRepository->find($dup) . ' a été tiré plusieurs fois.<br>';
+                $message .=   $dup . ' a été tiré plusieurs fois.<br>';
             }
         }
 
@@ -52,6 +47,9 @@ class PronosticComponent
             if ($tirant->getUtilisateursInterdits()->contains($tire)) {
                 $message .= $tirant . ' ne peut pas tirer ' . $tire . '.<br>';
             }
+            if ($tire == $utilisateur->getUtilisateurTire()) {
+                $message .= $tirant . ' n\'a pas pu tirer ' . $tire . '.<br>';
+            }
         }
 
         return $message;
@@ -59,18 +57,51 @@ class PronosticComponent
 
     public function getPronostic(): array
     {
+        /** @var Utilisateur */
+        $utilisateur = $this->utilisateurRepository->find($this->id);
+
         $pronos = $this->utilisateurRepository->findPronosticForUser($this->id);
+        $dups = $this->findDups();
         $pronostic = [];
         if (!$pronos == null) {
             foreach ($pronos as $key => $value) {
+                $erreur_tr = false;
+                $erreur_td = false;
                 $tirant = $this->utilisateurRepository->find($key);
                 $tire = $this->utilisateurRepository->find($value);
-                $pronostic[] = [
-                    $tirant,
-                    $tire
-                ];
+                if (
+                    $tirant->getUtilisateursInterdits()->contains($tire) ||
+                    $tire == $utilisateur->getUtilisateurTire() ||
+                    ($tire != $utilisateur->getUtilisateurTire() && $tirant == $utilisateur)
+                ) {
+                    $erreur_tr = true;
+                }
+                if (in_array($tire, $dups)) {
+                    $erreur_td = true;
+                }
+                if ($tire != null) {
+                    $pronostic[] = [
+                        $tirant,
+                        $tire,
+                        $erreur_tr,
+                        $erreur_td,
+                    ];
+                }
             }
         }
         return $pronostic;
+    }
+
+    private function findDups()
+    {
+        $pronostic = $this->utilisateurRepository->findPronosticForUser($this->id);
+        $dups = [];
+        foreach (array_count_values($pronostic) as $val => $c) {
+            if ($c > 1 && $val != 0) {
+                $dups[] =  $this->utilisateurRepository->find($val);
+            }
+        }
+
+        return $dups;
     }
 }
