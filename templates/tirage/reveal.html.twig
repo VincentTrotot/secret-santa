@@ -3,6 +3,18 @@
 {% block title %}Le tirage{% endblock %}
 
 {% block body %}
+
+<div class="container mx-3">
+<p>
+{% for chain in chains %}
+    {% for link in chain %}
+        {% if not(loop.first) %} -> {% endif %}{{ link }}
+    {% endfor %}
+    <br>
+{% endfor %}
+</p>
+</div>
+
 <div class="mt-5 mb-5">
     <table class="table table-sm">
         <thead>

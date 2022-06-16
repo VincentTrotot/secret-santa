@@ -41,8 +41,30 @@ class AdminController extends AbstractController
     {
         $utilisateurs = $utilisateurRepository->findAllParticipants();
 
+        $chains = [];
+        $copie = new ArrayCollection($utilisateurs);
+
+        $i = 0;
+        do {
+            $i++;
+            $link = [];
+            $u = $copie->first();
+            do {
+                $continue = true;
+                $link[] = $u;
+                if ($copie->contains($u)) {
+                    $copie->removeElement($u);
+                    $u = $u->getUtilisateurTire();
+                } else {
+                    $continue = false;
+                }
+            } while ($continue);
+            $chains[] = $link;
+        } while (!$copie->isEmpty());
+
         return $this->render('tirage/reveal.html.twig', [
             'utilisateurs' => $utilisateurs,
+            'chains' => $chains,
         ]);
     }
 
