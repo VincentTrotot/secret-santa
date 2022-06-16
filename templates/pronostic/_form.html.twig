@@ -12,7 +12,7 @@
     </thead>
     <tbody>
     {% for row in form.children %}
-        {% if row != "_token" %}
+        {% if row.vars.name != "_token" %}
         <tr>
             <td>{{ loop.index }}</td>
             <td>{{ form_label(row) }}</td>

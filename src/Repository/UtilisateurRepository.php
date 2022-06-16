@@ -102,12 +102,14 @@ class UtilisateurRepository extends ServiceEntityRepository implements PasswordU
         return $results;
     }
 
-    public function findPronosticForUser(int $id): array
+    public function findPronosticForUser(int $id): array|null
     {
         $pronostic = $this->find($id)->getPronostic();
-        uksort($pronostic, function ($a, $b) {
-            return $this->find($a)->getDateDeNaissance() < $this->find($b)->getDateDeNaissance() ? -1 : 1;
-        });
+        if (!$pronostic == null) {
+            uksort($pronostic, function ($a, $b) {
+                return $this->find($a)->getDateDeNaissance() < $this->find($b)->getDateDeNaissance() ? -1 : 1;
+            });
+        }
         return $pronostic;
     }
 }
