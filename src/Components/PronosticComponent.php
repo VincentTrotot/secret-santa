@@ -95,6 +95,9 @@ class PronosticComponent
     private function findDups()
     {
         $pronostic = $this->utilisateurRepository->findPronosticForUser($this->id);
+        if ($pronostic == null) {
+            return null;
+        }
         $dups = [];
         foreach (array_count_values($pronostic) as $val => $c) {
             if ($c > 1 && $val != 0) {
