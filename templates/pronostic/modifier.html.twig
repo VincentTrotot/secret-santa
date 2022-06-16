@@ -1,0 +1,13 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Modifier mon pronostic{% endblock %}
+
+{% block body %}
+    <h1>Modifier mon pronostic</h1>
+
+    {{ include('pronostic/_form.html.twig') }}
+
+    <div class="mt-5">
+    <a href="{{ path('compte_index') }}" class="btn btn-success">Retour à mon compte</a>
+    </div>
+{% endblock %}

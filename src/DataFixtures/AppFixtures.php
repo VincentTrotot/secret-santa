@@ -68,6 +68,19 @@ class AppFixtures extends Fixture
         ));
         $participant->setRoles(['ROLE_PARTICIPANT']);
         $participant->setDateDeNaissance($this->faker->dateTimeBetween('-45 years', '-20 years'));
+        $participant->setPronostic([
+            1 => 3,
+            2 => 4,
+            3 => 5,
+            4 => 6,
+            5 => 7,
+            6 => 8,
+            7 => 9,
+            8 => 10,
+            9 => 11,
+            10 => 1,
+            11 => 2,
+        ]);
         $this->utilisateurs->add($participant);
 
 

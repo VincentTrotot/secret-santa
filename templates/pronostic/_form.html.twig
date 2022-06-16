@@ -1,0 +1,31 @@
+<div class="form mt-5 mb5">
+{{ form_start(form) }}
+
+<table class="mt-3 table table-small">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Il/elle</th>
+            <th>aurait tiré</th>
+            <th>lui/elle</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for row in form.children %}
+        {% if row != "_token" %}
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td>{{ form_label(row) }}</td>
+            <td> -> </td>
+            <td>{{ form_widget(row) }}</td>
+        </tr>
+        {% endif %}
+    {% endfor %}
+    </tbody>
+</table>
+
+
+    {{ form_rest(form) }}
+    <button class="btn btn-primary">{{ button_label|default('Modifier mon pronostic') }}</button>
+{{ form_end(form) }}
+</div>

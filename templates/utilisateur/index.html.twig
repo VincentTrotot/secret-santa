@@ -49,4 +49,17 @@
             {{ component('echanges', {'id': app.user.id}) }}
         </div>
 {% endif %}
+
+{% if is_granted('ROLE_SPECTATEUR') %}
+        <div class="container py-5">
+            <h1>
+                <i class="bi bi-patch-question"></i></i> 
+                <small class="text-muted">Pronostics</small>
+            </h1>
+             <div class="mt-4">
+                <a href="{{ path('pronostic_modifier') }}" class="btn btn-outline-primary"><i class="bi bi-patch-question"></i> Modifier mon pronostic</a>
+            </div>
+                {{ component('pronostic', {'id': app.user.id}) }}
+        </div>
+{% endif %}
 {% endblock %}

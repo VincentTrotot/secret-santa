@@ -64,6 +64,9 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'receveur', targetEntity: Echange::class, orphanRemoval: true)]
     private $demandesRecues;
 
+    #[ORM\Column(type: 'array', nullable: true)]
+    private $pronostic = [];
+
     public function __construct()
     {
         $this->utilisateursInterdits = new ArrayCollection();
@@ -513,5 +516,25 @@ class Utilisateur implements UserInterface, PasswordAuthenticatedUserInterface
         $string = strtr($string, $chars);
 
         return $string;
+    }
+
+    public function getPronostic(): ?array
+    {
+        return $this->pronostic;
+    }
+
+    public function setPronostic(?array $pronostic): self
+    {
+        $this->pronostic = $pronostic;
+
+        return $this;
+    }
+
+    public function getPronosticFor(int $id)
+    {
+        if (!isset($this->pronostic[$id])) {
+            return null;
+        }
+        return $this->pronostic[$id];
     }
 }
