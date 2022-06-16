@@ -24,6 +24,11 @@ class PronosticController extends AbstractController
     #[Route('/modifier', name: 'pronostic_modifier')]
     public function modifier(Request $request, UtilisateurRepository $utilisateurRepository): Response
     {
+
+        if (date('d-m-Y') > $this->getParameter('FIN_PRONOSTIC')) {
+            $this->addFlash('info', 'Vous ne pouvez plus modifier votre pronostic.');
+            return $this->redirectToRoute('compte_index');
+        }
         /** @var Utilisateur */
         $utilisateur = $this->getUser();
         $pronostic = $utilisateurRepository->findPronosticForUser($utilisateur->getId());

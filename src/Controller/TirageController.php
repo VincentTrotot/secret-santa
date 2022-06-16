@@ -27,6 +27,7 @@ class TirageController extends AbstractController
         });
         return $this->render('tirage/tirage.html.twig', [
             'utilisateurs' => $utilisateurs,
+            'reveal' => $this->getParameter('REVEAL'),
         ]);
     }
 }

@@ -3,7 +3,7 @@
 {% block title %}Le tirage{% endblock %}
 
 {% block body %}
-{% set reveal = date() > date('2022-12-26') %}
+{% set r = date() > date(reveal) %}
     <table class="table table-sm">
         <thead>
             <th>#</th>
@@ -17,7 +17,7 @@
                 <tr>
                     <td>{{ loop.index }}</td>
                     <td>
-                        {% if reveal %}
+                        {% if r %}
                             {{ utilisateur }}
                         {% else %}
                             <i>Quelqu'un</i>
@@ -26,7 +26,7 @@
                     <td> -> </td>
                     <td><b>{{ utilisateur.utilisateurTire ? utilisateur.utilisateurTire }}</b></td>
                     <td>
-                        {% if reveal %}
+                        {% if r %}
                             <i>{{ {utilisateur} | merge(utilisateur.utilisateursInterdits) | join(', ', ' et ') }}</i>
                         {% else %}
                             <i>-</i>
