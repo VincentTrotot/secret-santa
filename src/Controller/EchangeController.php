@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Echange;
+use App\Entity\Tirage;
 use App\Form\EchangeType;
 use App\Entity\Utilisateur;
 use App\Repository\EchangeRepository;
@@ -18,7 +19,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class EchangeController extends AbstractController
 {
     #[Route('', name: 'compte_echange')]
-    public function echange(Request $request, EchangeRepository $echangeRepository)
+    public function echange(Request $request, EchangeRepository $echangeRepository, UtilisateurRepository $utilisateurRepository, ManagerRegistry $doctrine): Response
     {
         $echanges = $echangeRepository->findBy(['demandeur' => $this->getUser()]);
         foreach ($echanges as $echange) {
@@ -123,6 +124,15 @@ class EchangeController extends AbstractController
                 $message = 'Il n\'est pas possible d\'accepter cette demande. Elle a été automatiqement refusée.';
                 $echange->setStatus(Echange::STATUS_REFUSE);
             } else {
+
+                $tirage = new Tirage();
+                $tirage->setCreatedAt(new \DateTimeImmutable());
+                $data = [];
+                foreach ($utilisateurRepository->findAllParticipants() as $utilisateur) {
+                    $data[] = serialize($utilisateur);
+                }
+                $tirage->setData($data);
+                $doctrine->getManager()->persist($tirage);
 
                 $echange->setStatus(Echange::STATUS_ACCEPTE);
                 $this->swap($doctrine->getManager(), $echange->getDemandeur(), $echange->getReceveur());

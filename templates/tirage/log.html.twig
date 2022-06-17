@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Le tirage du {{ tirage.createdAt | date('d/m/Y - H:i') }}{% endblock %}
+
+{% block body %}
+
+<h1>Tirage du {{ tirage.createdAt | date('d/m/Y - H:i') }}</h1>
+<div class="mt-5 mb-5">
+    <table class="table table-sm">
+        <thead>
+            <th>#</th>
+            <th>il/elle</th>
+            <th>à tiré</th>
+            <th>lui/elle</th>
+        </thead>
+        <tbody>
+            {% for utilisateur in utilisateurs %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ utilisateur }}</td>
+                    <td> -> </td>
+                    <td><b>{{ utilisateur.utilisateurTire ? utilisateur.utilisateurTire }}</b></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<div class="mt-5 mb-5">
+<a href="{{ path('tirage_logs') }}" class="btn btn-outline-success"><i class="bi bi-archive"></i> Retour aux archives</a>
+</div>
+{% endblock %}

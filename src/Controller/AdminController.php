@@ -2,8 +2,10 @@
 
 namespace App\Controller;
 
+use App\Entity\Tirage;
 use App\Entity\Utilisateur;
 use App\Form\UtilisateurType;
+use App\Repository\TirageRepository;
 use App\Repository\EchangeRepository;
 use App\Repository\UtilisateurRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -103,12 +105,23 @@ class AdminController extends AbstractController
             }
         } while (count($tirage) != count($utilisateurs));
 
+        $json = [];
         foreach ($tirage as $tir) {
             $utilisateur = $tir[0];
             $tire = $tir[1];
             $utilisateur->setUtilisateurTire($tire);
             $utilisateurRepository->add($utilisateur);
+            $json[] = serialize($utilisateur);
         }
+        // foreach ($json as $data) {
+        //     dump(unserialize($data['tirant']));
+        //     dump(unserialize($data['tire']));
+        // }
+
+        $tirage_log = new Tirage();
+        $tirage_log->setCreatedAt(new \DateTimeImmutable());
+        $tirage_log->setData($json);
+        $doctrine->getManager()->persist($tirage_log);
         $doctrine->getManager()->flush();
 
         return $this->redirectToRoute('tirage_check');
@@ -119,6 +132,30 @@ class AdminController extends AbstractController
     {
         $this->resetTirage($doctrine, $utilisateurRepository, $echangeRepository);
         return $this->redirectToRoute('tirage_check');
+    }
+
+    #[Route('/tirage/logs', name: 'tirage_logs')]
+    public function tirageLogs(TirageRepository $tirageRepository): Response
+    {
+        $tirages = $tirageRepository->findAll();
+        return $this->render('tirage/logs.html.twig', [
+            'tirages' => $tirages,
+        ]);
+    }
+
+    #[Route('/tirage/log/{id}', name: 'tirage_log')]
+    public function tirageLog(Tirage $tirage): Response
+    {
+        $json = $tirage->getData();
+        $utilisateurs = [];
+        foreach ($json as $data) {
+            $utilisateurs[] = unserialize($data);
+        }
+
+        return $this->render('tirage/log.html.twig', [
+            'tirage' => $tirage,
+            'utilisateurs' => $utilisateurs,
+        ]);
     }
 
 
