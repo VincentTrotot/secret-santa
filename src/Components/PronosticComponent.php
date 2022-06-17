@@ -47,7 +47,7 @@ class PronosticComponent
             if ($tirant->getUtilisateursInterdits()->contains($tire)) {
                 $message .= $tirant . ' ne peut pas tirer ' . $tire . '.<br>';
             }
-            if ($tire == $utilisateur->getUtilisateurTire()) {
+            if ($tire == $utilisateur->getUtilisateurTire() && $tirant != $utilisateur) {
                 $message .= $tirant . ' n\'a pas pu tirer ' . $tire . '.<br>';
             }
         }
@@ -71,7 +71,7 @@ class PronosticComponent
                 $tire = $this->utilisateurRepository->find($value);
                 if (
                     $tirant->getUtilisateursInterdits()->contains($tire) ||
-                    $tire == $utilisateur->getUtilisateurTire() ||
+                    ($tire == $utilisateur->getUtilisateurTire() && $tirant != $utilisateur) ||
                     ($tire != $utilisateur->getUtilisateurTire() && $tirant == $utilisateur)
                 ) {
                     $erreur_tr = true;
