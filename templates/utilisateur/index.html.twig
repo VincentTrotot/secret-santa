@@ -22,7 +22,7 @@
         </div>
     </div>
 
-{% if is_granted('ROLE_PARTICIPANT') %}
+{% if is_granted('ROLE_PARTICIPANT') and tirage() %}
     {% if app.user.utilisateurTire %}
     <div class="container bg-light py-5">
             <h1>
@@ -50,7 +50,7 @@
         </div>
 {% endif %}
 
-{% if is_granted('ROLE_SPECTATEUR') %}
+{% if is_granted('ROLE_SPECTATEUR') and tirage() %}
         <div class="container py-5">
             <h1>
                 <i class="bi bi-patch-question"></i></i> 

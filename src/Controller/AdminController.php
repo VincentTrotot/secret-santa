@@ -260,6 +260,7 @@ class AdminController extends AbstractController
         $allUtilisateurs = $utilisateurRepository->findAll();
         foreach ($allUtilisateurs as $utilisateur) {
             $utilisateur->setUtilisateurTire(null);
+            $utilisateur->setPronostic(null);
             $utilisateurRepository->add($utilisateur);
         }
         $echanges = $echangeRepository->findAll();

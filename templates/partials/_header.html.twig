@@ -7,10 +7,12 @@
     {% if is_granted('ROLE_SPECTATEUR') %}
         <a class="{% if app.request.get('_route') == 'compte_index' %} active{% endif %}"{% if app.request.get('_route') == 'compte_index' %} aria-current="page"{% endif %} href="{{ path('compte_index') }}"><i class="bi bi-person-fill"></i> Mon compte</a>
         <a class="{% if app.request.get('_route') == 'compte_listes' %} active{% endif %}"{% if app.request.get('_route') == 'compte_listes' %} aria-current="page"{% endif %} href="{{ path('compte_listes') }}"><i class="bi bi-box2-heart"></i> Listes</a>
-        <a class="{% if app.request.get('_route') == 'compte_tirage' %} active{% endif %}"{% if app.request.get('_route') == 'compte_tirage' %} aria-current="page"{% endif %} href="{{ path('compte_tirage') }}"><i class="bi bi-card-checklist"></i> Tirage</a>
+         {% if tirage() %}
+            <a class="{% if app.request.get('_route') == 'compte_tirage' %} active{% endif %}"{% if app.request.get('_route') == 'compte_tirage' %} aria-current="page"{% endif %} href="{{ path('compte_tirage') }}"><i class="bi bi-card-checklist"></i> Tirage</a>
+        {% endif %}
         <a class="{% if app.request.get('_route') == 'compte_ajouter_souhait' %} active{% endif %}"{% if app.request.get('_route') == 'compte_ajouter_souhait' %} aria-current="page"{% endif %} href="{{ path('compte_ajouter_souhait') }}"><i class="bi bi-gift"></i> Ajouter un souhait</a>
     {% endif %} 
-    {% if is_granted('ROLE_PARTICIPANT') %}
+    {% if is_granted('ROLE_PARTICIPANT') and tirage() %}
         <a class="{% if app.request.get('_route') == 'compte_echange' %} active{% endif %}"{% if app.request.get('_route') == 'compte_echange' %} aria-current="page"{% endif %} href="{{ path('compte_echange') }}"><i class="bi bi-arrow-left-right"></i> Demander un échange</a>
     {% endif %}
     {% if is_granted('ROLE_ADMIN') %}
