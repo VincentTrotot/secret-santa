@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Les archives des pronostics{% endblock %}
+
+{% block body %}
+<h2>Pronostic de {{pronostic.utilisateur}} le {{pronostic.createdAt | date('d/m/Y - H:i') }}</h2>
+<table class="mt-3 table table-small">
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Il/elle</th>
+            <th>aurait tiré</th>
+            <th>lui/elle</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for tirant, tire in pronostic.utilisateur.pronostic %}
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td>{% if  utilisateurs[tirant] %}{{utilisateurs[tirant]}}{% else %}<i> utilisateur sypprimé</i>{% endif %}
+            <td> -> </td>
+            <td>{% if  utilisateurs[tire] %}{{utilisateurs[tire]}}{% else %}<i> utilisateur sypprimé</i>{% endif %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div class="mt-5 mb-5">
+<a href="{{ path('pronostic_logs') }}" class="btn btn-outline-success"><i class="bi bi-archive"></i> Retour aux archives</a>
+</div>
+{% endblock %}

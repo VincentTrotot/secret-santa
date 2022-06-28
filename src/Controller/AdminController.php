@@ -7,6 +7,7 @@ use App\Entity\Utilisateur;
 use App\Form\UtilisateurType;
 use App\Repository\TirageRepository;
 use App\Repository\EchangeRepository;
+use App\Repository\PronosticRepository;
 use App\Repository\UtilisateurRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\HttpFoundation\Request;
@@ -230,6 +231,28 @@ class AdminController extends AbstractController
         }
 
         return $this->redirectToRoute('admin_utilisateurs');
+    }
+
+    #[Route('/pronostics/logs', name: 'pronostic_logs')]
+    public function pronosticsLogs(PronosticRepository $pronosticRepository): Response
+    {
+        $pronostics = $pronosticRepository->findAll();
+        return $this->render('pronostic/logs.html.twig', [
+            'pronostics' => $pronostics,
+        ]);
+    }
+
+    #[Route('/pronostics/log/{id}', name: 'pronostic_log')]
+    public function pronosticLog(int $id, PronosticRepository $pronosticRepository, UtilisateurRepository $utilisateurRepository): Response
+    {
+
+        $pronostic = $pronosticRepository->find($id);
+        $utilisateurs = $utilisateurRepository->findAllInArray();
+
+        return $this->render('pronostic/log.html.twig', [
+            'pronostic' => $pronostic,
+            'utilisateurs' => $utilisateurs
+        ]);
     }
 
     private function resetTirage(ManagerRegistry $doctrine, UtilisateurRepository $utilisateurRepository, EchangeRepository $echangeRepository): void

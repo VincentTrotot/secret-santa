@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Les archives des pronostics{% endblock %}
+
+{% block body %}
+<div class="mt-5 mb-5">
+    <table class="table table-sm">
+        <thead>
+            <th>#</th>
+            <th>Date</th>
+            <th></th>
+            </thead>
+        <tbody>
+            {% for pronostic in pronostics|reverse %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ pronostic.utilisateur }} - {{ pronostic.createdAt | date('d/m/Y - H:i') }}</td>
+                    <td><a href="{{ path('pronostic_log', {'id': pronostic.id}) }}">Voir le pronostic</a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

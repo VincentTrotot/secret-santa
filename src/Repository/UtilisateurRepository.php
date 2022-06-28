@@ -128,4 +128,14 @@ class UtilisateurRepository extends ServiceEntityRepository implements PasswordU
         }
         return $pronostic;
     }
+
+    public function findAllInArray(): array
+    {
+        $utilisateurs = $this->findAll();
+        $array = [];
+        foreach ($utilisateurs as $u) {
+            $array[$u->getId()] = $u;
+        }
+        return $array;
+    }
 }
