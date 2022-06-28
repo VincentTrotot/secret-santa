@@ -159,6 +159,11 @@ class UtilisateurRepository extends ServiceEntityRepository implements PasswordU
 
         foreach ($utilisateurs as $utilisateur) {
             $birthday = strtotime(UtilisateurRepository::get_next_birthday($utilisateur->getDateDeNaissance()));
+            if ($birthday - $today >= 365 * 24 * 3600) {
+                $prochain = $utilisateur;
+                $closest = $birthday - $today;
+                break;
+            }
             if ($birthday - $today < $closest) {
                 $prochain = $utilisateur;
                 $closest = $birthday - $today;
