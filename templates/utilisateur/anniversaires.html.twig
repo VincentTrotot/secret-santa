@@ -1,0 +1,40 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Utilisateurs{% endblock %}
+
+{% block body %}
+    <h1>
+        <i class="bi bi-balloon-heart-fill"></i>
+        <small class="text-muted">Les anniversaires</small>
+    </h1>
+    <table class="table table-sm">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th></th>
+                <th>Date de naissance</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for utilisateur in utilisateurs %}
+            {% set difference = date().diff(date(utilisateur[0].dateDeNaissance)) %}
+            {% set age = difference.y %}
+            {% set days = (date(utilisateur[1]).diff(date())).days + 1 %}
+            {% set today = ( "now" |date('d') == utilisateur[0].dateDeNaissance|date('d') and  "now"|date('m') == utilisateur[0].dateDeNaissance|date('m')) %}
+                <tr {% if today %}class="bg-info"{% endif %}>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ utilisateur[0].prenom }}</td>
+                    <td>{{ utilisateur[0].dateDeNaissance | format_datetime(locale='fr', pattern='d MMMM Y') }}</td>
+                    <td>
+                        {% if today %}
+                            {{ age }} ans aujourd'hui
+                        {% else %}
+                            {{ age+1 }} ans dans {{ days }} jour{% if days > 1 %}s{% endif %}
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

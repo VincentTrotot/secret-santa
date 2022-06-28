@@ -11,6 +11,7 @@
             <a class="{% if app.request.get('_route') == 'compte_tirage' %} active{% endif %}"{% if app.request.get('_route') == 'compte_tirage' %} aria-current="page"{% endif %} href="{{ path('compte_tirage') }}"><i class="bi bi-card-checklist"></i> Tirage</a>
         {% endif %}
         <a class="{% if app.request.get('_route') == 'compte_ajouter_souhait' %} active{% endif %}"{% if app.request.get('_route') == 'compte_ajouter_souhait' %} aria-current="page"{% endif %} href="{{ path('compte_ajouter_souhait') }}"><i class="bi bi-gift"></i> Ajouter un souhait</a>
+        <a class="{% if app.request.get('_route') == 'anniversaires' %} active{% endif %}"{% if app.request.get('_route') == 'anniversaires' %} aria-current="page"{% endif %} href="{{ path('anniversaires') }}"><i class="bi bi-balloon-heart"></i> Les anniversaires</a>
     {% endif %} 
     {% if is_granted('ROLE_PARTICIPANT') and tirage() %}
         <a class="{% if app.request.get('_route') == 'compte_echange' %} active{% endif %}"{% if app.request.get('_route') == 'compte_echange' %} aria-current="page"{% endif %} href="{{ path('compte_echange') }}"><i class="bi bi-arrow-left-right"></i> Demander un échange</a>

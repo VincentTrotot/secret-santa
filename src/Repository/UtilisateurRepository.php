@@ -158,19 +158,34 @@ class UtilisateurRepository extends ServiceEntityRepository implements PasswordU
         $closest = 366 * 24 * 3600;
 
         foreach ($utilisateurs as $utilisateur) {
-            $birthday = strtotime($this->get_next_birthday($utilisateur->getDateDeNaissance()));
+            $birthday = strtotime(UtilisateurRepository::get_next_birthday($utilisateur->getDateDeNaissance()));
             if ($birthday - $today < $closest) {
                 $prochain = $utilisateur;
                 $closest = $birthday - $today;
             }
         }
-        $prochain->setDateDeNaissance(new \DateTime($this->get_next_birthday($prochain->getDateDeNaissance())));
+        $prochain->setDateDeNaissance(new \DateTime(UtilisateurRepository::get_next_birthday($prochain->getDateDeNaissance())));
         return $prochain;
     }
 
-    private function get_next_birthday($birthday)
+    public function findAllParticipantsEtSpectateurs()
     {
-        $date = $birthday;
+        $utilisateurs = $this->createQueryBuilder('u')
+            ->select('u')
+            ->where('u.roles LIKE :role')
+            ->orWhere('u.roles LIKE :role2')
+            ->setParameter('role', '%' . Utilisateur::PARTICIPANT . '%')
+            ->setParameter('role2', '%' . Utilisateur::SPECTATEUR . '%')
+            ->orderBy('u.dateDeNaissance', 'ASC')
+            ->getQuery()
+            ->getResult();
+
+        return $utilisateurs;
+    }
+
+    static function get_next_birthday($birthday)
+    {
+        $date = clone $birthday;
         $date->modify('+' . date('Y') - $date->format('Y') . ' years');
         if ($date < new \DateTime()) {
             $date->modify('+1 year');
