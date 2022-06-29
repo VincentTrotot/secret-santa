@@ -15,6 +15,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 #[Route('/admin')]
 class AdminController extends AbstractController
@@ -170,7 +171,7 @@ class AdminController extends AbstractController
     }
 
     #[Route('/utilisateur/modifier/{id}', name: 'admin_modifier_utilisateur')]
-    public function modifierUtilisateur(Request $request, UtilisateurRepository $utilisateurRepository, int $id): Response
+    public function modifierUtilisateur(Request $request, UtilisateurRepository $utilisateurRepository, UserPasswordHasherInterface $userPasswordHasher, int $id): Response
     {
         $utilisateur = $utilisateurRepository->find($id);
 
@@ -183,6 +184,15 @@ class AdminController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
+            if (null !== $form->get('plainPassword')->getData()) {
+                $utilisateur->setPassword(
+                    $userPasswordHasher->hashPassword(
+                        $utilisateur,
+                        $form->get('plainPassword')->getData()
+                    )
+                );
+            }
 
             $utilisateur->removeUtilisateursInterdit($utilisateur);
             $utilisateurRepository->add($utilisateur, true);

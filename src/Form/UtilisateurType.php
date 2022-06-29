@@ -26,6 +26,22 @@ class UtilisateurType extends AbstractType
             ->add('nom', null, [
                 'label' => 'Nom',
             ])
+            ->add('plainPassword', PasswordType::class, [
+                // instead of being set onto the object directly,
+                // this is read and encoded in the controller
+                'label' => 'Mot de passe',
+                'mapped' => false,
+                'attr' => ['autocomplete' => 'new-password'],
+                'required' => false,
+                'constraints' => [
+                    new Length([
+                        'min' => 6,
+                        'minMessage' => 'Votre mot de passe doit faire au moins {{ limit }} caractères',
+                        // max length allowed by Symfony for security reasons
+                        'max' => 4096,
+                    ]),
+                ],
+            ])
             ->add('dateDeNaissance', DateTimeType::class, [
                 'label' => 'Date de naissance',
                 'widget' => 'single_text',
