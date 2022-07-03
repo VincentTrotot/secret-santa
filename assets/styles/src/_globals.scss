@@ -74,3 +74,9 @@ h6 {
 #__next {
     isolation: isolate;
 }
+
+h1,
+h2,
+h3 {
+    color: var(--main-color);
+}

@@ -7,32 +7,32 @@
         <i class="bi bi-balloon-heart-fill"></i>
         <small class="text-muted">Les anniversaires</small>
     </h1>
-    <table class="table table-sm mt-4">
-        <thead>
-            <tr>
-                <th></th>
-                <th>Date de naissance</th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for utilisateur in utilisateurs %}
-            {% set difference = date().diff(date(utilisateur[0].dateDeNaissance)) %}
-            {% set age = difference.y %}
-            {% set days = (date(utilisateur[1]).diff(date())).days + 1 %}
-            {% set today = ( "now" |date('d') == utilisateur[0].dateDeNaissance|date('d') and  "now"|date('m') == utilisateur[0].dateDeNaissance|date('m')) %}
-                <tr {% if today %}class="bg-info"{% endif %}>
-                    <td>{{ utilisateur[0].prenom }}</td>
-                    <td>{{ utilisateur[0].dateDeNaissance | format_datetime(locale='fr', pattern='d MMMM Y') }}</td>
-                    <td>
-                        {% if today %}
-                            {{ age }} ans aujourd'hui
-                        {% else %}
-                            {{ age+1 }} ans dans {{ days }} jour{% if days > 1 %}s{% endif %}
-                        {% endif %}
-                    </td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    
+    <div class="mt-5">
+    {% for utilisateur in utilisateurs %}
+    {% set difference = date().diff(date(utilisateur[0].dateDeNaissance)) %}
+    {% set age = difference.y %}
+    {% set days = (date(utilisateur[1]).diff(date())).days + 1 %}
+    {% set today = ( "now" |date('d') == utilisateur[0].dateDeNaissance|date('d') and  "now"|date('m') == utilisateur[0].dateDeNaissance|date('m')) %}
+    {% if loop.index == 1 %}<h3 class="mb-4">Le prochain</h3>{% endif %}
+    {% if loop.index == 2 %}<h3 class="mb-4">Les suivants</h3>{% endif %}
+        <div>
+            <h5>
+                {{ utilisateur[0].prenom }}
+                <small class="text-muted">({{ utilisateur[0].dateDeNaissance | format_datetime(locale='fr', pattern='d MMMM Y') }})</small>
+            </h5>
+            <p>
+                =>
+                <i>
+                {% if today %}
+                    {{ age }} ans aujourd'hui
+                {% else %}
+                    {{ age+1 }} ans dans {{ days }} jour{% if days > 1 %}s{% endif %}
+                {% endif %}
+                </i>
+            </p>
+        </div>
+        <hr{% if loop.index == 1 %} class="mb-5"{% endif %}>
+    {% endfor %}
+    </div>
 {% endblock %}
