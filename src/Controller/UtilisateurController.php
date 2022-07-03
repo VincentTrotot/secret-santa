@@ -29,6 +29,9 @@ class UtilisateurController extends AbstractController
 
             ];
         }
+        usort($utilisateurs, function ($a, $b) {
+            return $a[1] >= $b[1];
+        });
         return $this->render('utilisateur/anniversaires.html.twig', [
             'utilisateurs' => $utilisateurs
         ]);
