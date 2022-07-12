@@ -77,6 +77,7 @@ class AdminController extends AbstractController
     {
         $this->resetTirage($doctrine, $utilisateurRepository, $echangeRepository);
 
+        /** @var ArrayCollection<Utilisateur> $utilisateurs */
         $utilisateurs = new ArrayCollection($utilisateurRepository->findAllParticipants());
 
         $possible = true;

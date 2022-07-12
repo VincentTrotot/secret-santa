@@ -192,7 +192,7 @@ class UtilisateurRepository extends ServiceEntityRepository implements PasswordU
     {
         $date = clone $birthday;
         $date->modify('+' . date('Y') - $date->format('Y') . ' years');
-        if ($date < new \DateTime()) {
+        if ($date < (new \DateTime())->setTime(0, 0)) {
             $date->modify('+1 year');
         }
 

@@ -1,13 +1,13 @@
 {% if this.utilisateur %}
-{% set days = (date(this.utilisateur.dateDeNaissance).diff(date())).days + 1 %}
+{% set days = (date(this.utilisateur.dateDeNaissance).diff(date()|date_modify('today'))).days %}
 <div class="container py-5">
     <h1>
         <i class="bi bi-balloon-heart-fill"></i>
-        <small class="text-muted">Le prochain anniversaire / {% if days >= 365 %}aujourd'hui{% else %}J - {{ days }}{% endif %}</small>
+        <small class="text-muted">Le prochain anniversaire / {% if days == 0 %}aujourd'hui{% else %}J - {{ days }}{% endif %}</small>
     </h1>
     <p class="mt-4">
         Le prochain anniversaire est {% if this.utilisateur == app.user %}le votre{% else %}celui de {{ this.utilisateur }}{% endif %}, 
-        {% if days >= 365 %}
+        {% if days == 0 %}
             aujourd'hui.
         {% else %}
             le {{ this.utilisateur.dateDeNaissance | format_datetime(locale='fr', pattern='EEEE d MMMM Y')}}.
